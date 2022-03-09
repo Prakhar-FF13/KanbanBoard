@@ -40,8 +40,13 @@ def login():
         conn = getSqliteConnection()
         data = conn.execute(
             'SELECT * FROM user WHERE username=(?) and password=(?)',
-            (username, password)).fetchall()[0]
+            (username, password)).fetchall()
         conn.commit()
         conn.close()
+
+        if (len(data) == 0):
+            return {}.to_json()
+
+        data = data[0]
 
         return {id: data['id'], username: data['username'], password: data['password']}.to_json()
