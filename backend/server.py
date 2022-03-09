@@ -44,4 +44,4 @@ def login():
         conn.commit()
         conn.close()
 
-        return {username: data['username'], password: data['password']}.to_json()
+        return {id: data['id'], username: data['username'], password: data['password']}.to_json()
