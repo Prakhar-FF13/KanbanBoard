@@ -1,6 +1,6 @@
 '''
   To run this server:
-  export FLASK_APP=hello
+  export FLASK_APP=server
   export FLASK_ENV=development
   flask run
 '''
@@ -17,7 +17,7 @@ def getSqliteConnection():
     return connection
 
 
-@app.route('/register', methods=('POST'))
+@app.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -32,7 +32,7 @@ def register():
         return {}.to_json()
 
 
-@app.route('/login', methods=('POST'))
+@app.route('/login', methods=['POST'])
 def login():
     if request.method == 'GET':
         username = request.form.get('username')
