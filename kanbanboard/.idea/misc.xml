@@ -3,6 +3,17 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/ic_baseline_account_circle_24.xml" value="0.1125" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/ic_email.xml" value="0.215" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/ic_lock.xml" value="0.215" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/ic_person.xml" value="0.215" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/round_bg.xml" value="0.1125" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/round_border.xml" value="0.1125" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/wave.xml" value="0.215" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_login.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/layout_forgotpassword.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/layout_registerdialog.xml" value="0.2033514492753623" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2677083333333333" />
       </map>
     </option>
