@@ -3,16 +3,31 @@ package com.example.myapplication;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -35,8 +50,8 @@ public class LoginActivity extends AppCompatActivity {
 
         if(savedInstanceState != null)
         {
-            etUsername.setText(savedInstanceState.getString("USERNAME"));
-            etPassword.setText(savedInstanceState.getString("PASSWORD"));
+            etUsername.setText(savedInstanceState.getString("username"));
+            etPassword.setText(savedInstanceState.getString("password"));
             credential = (HashMap<String, String>) savedInstanceState.getSerializable("CREDENTIAL_MAP");
         }
 
@@ -48,26 +63,45 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     Toast.makeText(getApplicationContext(),"Please Enter username and Login again", Toast.LENGTH_SHORT).show();
                 }
-                else if(etPassword.getText() == null || etPassword.getText().toString() == "")
+                else if(etPassword.getText() == null || etPassword.getText().toString().equals(""))
                 {
                     Toast.makeText(getApplicationContext(),"Please Enter password and Login again", Toast.LENGTH_SHORT).show();
                 }
                 else
                 {
-                    if(credential.containsKey(etUsername.getText().toString().toLowerCase()))
-                   {
-                       if(etPassword.getText().toString().toLowerCase().equals(credential.get(etUsername.getText().toString().toLowerCase())))
-                            Toast.makeText(getApplicationContext(),etUsername.getText().toString().toLowerCase() +" login successfully", Toast.LENGTH_SHORT).show();
-                       else
-                           Toast.makeText(getApplicationContext(),"Password not matched", Toast.LENGTH_SHORT).show();
-                   }
-                   else {
-                       Toast.makeText(getApplicationContext(),"User not found", Toast.LENGTH_SHORT).show();
-                   }
+                    credential.put("username", etUsername.getText().toString());
+                    credential.put("password", etPassword.getText().toString());
+
+                    // create json object to pass as body of request. (from hashmap/map)
+                    JSONObject creds = new JSONObject(credential);
+                    // client to send request.
+                    OkHttpClient client = new OkHttpClient();
+                    // media type to json, to inform the data is in json format
+                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                    // request body.
+                    RequestBody data = RequestBody.create(creds.toString(), JSON);
+                    // create request.
+                    Request rq = new Request.Builder().url("http://10.0.2.2:5000/login").post(data).build();
+                    client.newCall(rq).enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.i("NetworkCall", e.toString());
+                        }
+                        @Override
+                        public void onResponse(Call call, Response response) throws IOException {
+                            String res = response.body().string();
+                            Log.i("NetworkCall", res);
+                            try {
+                                JSONObject x = new JSONObject(res);
+                            } catch (Exception e) {
+                                Log.i("NetworkCall", e.getMessage());
+                                Log.i("NetworkCall", "Error converting response from string to JSON");
+                            }
+                        }
+                    });
                 }
             }
         });
-
 
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,15 +135,15 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        etUsername.setText(savedInstanceState.getString("USERNAME"));
-        etPassword.setText(savedInstanceState.getString("PASSWORD"));
+        etUsername.setText(savedInstanceState.getString("username"));
+        etPassword.setText(savedInstanceState.getString("password"));
         credential = (HashMap<String, String>) savedInstanceState.getSerializable("CREDENTIAL_MAP");
     }
 
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putString("USERNAME",etUsername.getText().toString());
-        outState.putString("PASSWORD",etPassword.getText().toString());
+        outState.putString("username",etUsername.getText().toString());
+        outState.putString("password",etPassword.getText().toString());
         outState.putSerializable("CREDENTIAL_MAP",credential);
         super.onSaveInstanceState(outState);
     }

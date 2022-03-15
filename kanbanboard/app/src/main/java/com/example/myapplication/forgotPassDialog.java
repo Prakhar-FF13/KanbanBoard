@@ -4,12 +4,25 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDialogFragment;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class forgotPassDialog extends AppCompatDialogFragment {
     private EditText editTextUsername;
@@ -51,17 +64,28 @@ public class forgotPassDialog extends AppCompatDialogFragment {
                             Toast.makeText(getContext(), "Confirm password field can't be empty", Toast.LENGTH_SHORT).show();
                         }
                         else {
-                            if(LoginActivity.credential.containsKey(username)) {
-                                if (password.equals(confirmPassword)) {
-                                    LoginActivity.credential.put(username, password);
-                                    Toast.makeText(getContext(), "Password update successfully", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(getContext(), "Password not matched with confirm password", Toast.LENGTH_SHORT).show();
+                            LoginActivity.credential.put("username", username);
+                            LoginActivity.credential.put("password", password);
+                            // create json object to pass as body of request. (from hashmap/map)
+                            JSONObject creds = new JSONObject(LoginActivity.credential);
+                            // client to send request.
+                            OkHttpClient client = new OkHttpClient();
+                            // media type to json, to inform the data is in json format
+                            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                            // request body.
+                            RequestBody data = RequestBody.create(creds.toString(), JSON);
+                            // create request.
+                            Request rq = new Request.Builder().url("http://10.0.2.2:5000/forgot").post(data).build();
+                            client.newCall(rq).enqueue(new Callback() {
+                                @Override
+                                public void onFailure(Call call, IOException e) {
+                                    Log.i("NetworkCall", e.toString());
                                 }
-                            }
-                            else{
-                                Toast.makeText(getContext(), "User not found.", Toast.LENGTH_SHORT).show();
-                            }
+                                @Override
+                                public void onResponse(Call call, Response response) throws IOException {
+                                    Log.i("NetworkCall", response.body().string());
+                                }
+                            });
                         }
                     }
                 });
