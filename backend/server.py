@@ -5,10 +5,24 @@
   flask run
 '''
 
-from flask import Flask
+from flask import Flask, request
 import sqlite3
+import json
 
 app = Flask(__name__)
+
+
+def initDB():
+    connection = sqlite3.connect('database.db')
+
+    with open('schema.sql') as f:
+        connection.executescript(f.read())
+
+    connection.commit()
+    connection.close()
+
+
+initDB()
 
 
 def getSqliteConnection():
@@ -20,33 +34,67 @@ def getSqliteConnection():
 @app.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
+        x = json.loads(request.data)
+        print(x)
+        username = x['username']
+        password = x['password']
         conn = getSqliteConnection()
-        conn.execute('INSERT INTO user(username, password) VALUES (?,?)',
+        conn.execute('INSERT INTO users(username, password) VALUES (?,?)',
                      (username, password))
         conn.commit()
         conn.close()
-        return {}.to_json()
+        return json.dumps({"code": 200, "message": "registration successfull"})
     else:
-        return {}.to_json()
+        return json.dumps({"code": 400, "message": "registration failed"})
 
 
 @app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'GET':
-        username = request.form.get('username')
-        password = request.form.get('password')
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        username = x['username']
+        password = x['password']
         conn = getSqliteConnection()
         data = conn.execute(
-            'SELECT * FROM user WHERE username=(?) and password=(?)',
+            'SELECT * FROM users WHERE username=(?) and password=(?)',
             (username, password)).fetchall()
         conn.commit()
         conn.close()
 
         if (len(data) == 0):
-            return {}.to_json()
+            return json.dumps({"code": 400, "message": "User not found"})
 
         data = data[0]
 
-        return {id: data['id'], username: data['username'], password: data['password']}.to_json()
+        return json.dumps({"code": 200, "message": "Logged In", "username": data['username'], "password": data['password']})
+    else:
+        return json.dumps({"code": 400, "message": "Login Failed"})
+
+
+@app.route('/forgot', methods=['POST'])
+def forgot():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        username = x['username']
+        password = x['password']
+        conn = getSqliteConnection()
+        data = conn.execute(
+            'SELECT * FROM users WHERE username=(?)',
+            (username,)).fetchall()
+        conn.commit()
+        conn.close()
+
+        if (len(data) == 0):
+            return json.dumps({"code": 400, "message": "User not found"})
+
+        data = data[0]
+        conn = getSqliteConnection()
+        cur = conn.cursor()
+        cur.execute('UPDATE users SET password=(?) WHERE username=(?)',
+                    (password, username))
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Password Updated"})
