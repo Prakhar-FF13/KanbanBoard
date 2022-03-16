@@ -98,3 +98,70 @@ def forgot():
         conn.close()
 
         return json.dumps({"code": 200, "message": "Password Updated"})
+
+
+@app.route('/workspaces', methods=['POST'])
+def workspaces():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        username = x['username']
+        conn = getSqliteConnection()
+        data = conn.execute(
+            'SELECT * FROM workspaceusers WHERE username=(?)',
+            (username,)).fetchall()
+
+        if (len(data) == 0):
+            return json.dumps({"code": 200, "message": "No workspaces found"})
+
+        workspaces = []
+        for d in data:
+            x = conn.execute(
+                'SELECT * FROM workspaces WHERE wid=(?)',
+                (d["wid"], )).fetchall()
+            workspaces.append({
+                "wid": x[0]["wid"],
+                "name": x[0]["name"],
+                "createdBy": x[0]["createdBy"],
+                "members": x[0]["members"]
+            })
+
+        print(workspaces)
+
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Workspaces found", "workspaces": workspaces})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to get workspaces"})
+
+
+@app.route('/createworkspace', methods=['POST'])
+def createworkspace():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        createdBy = x['createdBy']
+        name = x['name']
+        conn = getSqliteConnection()
+        conn.execute(
+            "INSERT INTO WORKSPACES(name,createdBy) VALUES(?,?)", (name, createdBy))
+        data = conn.execute(
+            "SELECT * FROM WORKSPACES WHERE name=(?) AND createdBy=(?)", (name, createdBy)).fetchall()
+        conn.execute(
+            "INSERT INTO WORKSPACEUSERS VALUES(?,?)", (
+                data[0]["wid"], data[0]["createdBy"])
+        )
+        conn.commit()
+        conn.close()
+
+        return json.dumps({
+            "code": 200,
+            "message": "Workspaces created",
+            "wid": data[0]["wid"],
+            "name": data[0]["name"],
+            "createdBy": data[0]["createdBy"],
+            "members": data[0]["members"],
+        })
+    else:
+        return json.dumps({"code": 400, "message": "Failed to create workspace"})

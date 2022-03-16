@@ -40,8 +40,9 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
         holder.mcardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, MainActivity.class);
-                context.startActivity(intent);
+                // @TODO show workspace details activity. Intent
+//                Intent intent = new Intent(context, MainActivity.class);
+//                context.startActivity(intent);
             }
         });
     }

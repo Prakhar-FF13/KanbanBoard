@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -32,6 +34,7 @@ public class LoginActivity extends AppCompatActivity {
     Button btnLogin;
     TextView tvForgotPassword,tvRegister;
     public static HashMap<String ,String > credential = new HashMap<>();
+    private Handler lHandler;
 
 
     @Override
@@ -44,6 +47,8 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin = findViewById(R.id.btnLogin);
         tvForgotPassword = findViewById(R.id.forgotPassword);
         tvRegister = findViewById(R.id.gotoRegister);
+
+        lHandler = new Handler(Looper.getMainLooper());
 
         if(savedInstanceState != null)
         {
@@ -90,8 +95,18 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("NetworkCall", res);
                             try {
                                 JSONObject x = new JSONObject(res);
-                                Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
-                                startActivity(workspaceintent);
+                                if (x.getInt("code") == 200 && x.getString("message").equals("Logged In")) {
+                                    Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
+                                    workspaceintent.putExtra("user", x.toString());
+                                    startActivity(workspaceintent);
+                                } else {
+                                    lHandler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(), "Login Failed", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                }
                             } catch (Exception e) {
                                 Log.i("NetworkCall", e.getMessage());
                                 Log.i("NetworkCall", "Error converting response from string to JSON");

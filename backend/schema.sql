@@ -9,8 +9,18 @@ DROP TABLE IF EXISTS workspaces;
 
 CREATE TABLE workspaces (
   wid INTEGER PRIMARY KEY AUTOINCREMENT,
-  username VARCHAR(255) NOT NULL,
-  FOREIGN KEY (username) REFERENCES users (username) ON DELETE CASCADE
+  name VARCHAR(255) UNIQUE NOT NULL,
+  members INTEGER DEFAULT 1,
+  createdBy VARCHAR(255) NOT NULL
+);
+
+DROP TABLE IF EXISTS workspaceusers;
+
+CREATE TABLE workspaceusers (
+  wid INTEGER,
+  username VARCHAR(255),
+  FOREIGN KEY (username) REFERENCES users (username) ON DELETE CASCADE,
+  FOREIGN KEY (wid) REFERENCES workspaces (wid) ON DELETE CASCADE
 );
 
 DROP TABLE IF EXISTS workspaceTasks;
@@ -18,8 +28,8 @@ DROP TABLE IF EXISTS workspaceTasks;
 CREATE TABLE workspaceTasks (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   wid INTEGER NOT NULL,
-  name VARCHAR(255) NOT NULL,
-  detail VARCHAR(255) NOT NULL,
+  createdBy VARCHAR(255) NOT NULL,
+  details VARCHAR(255) NOT NULL,
   assignedTo VARCHAR(255) NOT NULL,
   status VARCHAR(255) NOT NULL,
   FOREIGN KEY (wid) REFERENCES workspaces (wid) ON DELETE CASCADE
