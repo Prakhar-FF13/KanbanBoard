@@ -12,12 +12,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -93,6 +90,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.i("NetworkCall", res);
                             try {
                                 JSONObject x = new JSONObject(res);
+                                Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
+                                startActivity(workspaceintent);
                             } catch (Exception e) {
                                 Log.i("NetworkCall", e.getMessage());
                                 Log.i("NetworkCall", "Error converting response from string to JSON");
