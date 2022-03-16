@@ -20,6 +20,19 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
     private Button openBtn,inProgressBtn,closeBtn,addTaskBtn;
     private int wid;
 
+    /*
+    *   Assume you have data in the format:
+    *  [ob1, obj2 , ....]
+    *   ob1 = {
+    *   id, //of task
+    *   title,
+    *   description,
+    *   priority,
+    *   status,
+    *   assignee
+    * }
+    * */
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
