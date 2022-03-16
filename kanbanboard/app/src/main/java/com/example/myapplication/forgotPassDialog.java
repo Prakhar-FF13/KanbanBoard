@@ -75,7 +75,7 @@ public class forgotPassDialog extends AppCompatDialogFragment {
                             // request body.
                             RequestBody data = RequestBody.create(creds.toString(), JSON);
                             // create request.
-                            Request rq = new Request.Builder().url("http://10.0.2.2:5000/forgot").post(data).build();
+                            Request rq = new Request.Builder().url(ServerURL.forgot).post(data).build();
                             client.newCall(rq).enqueue(new Callback() {
                                 @Override
                                 public void onFailure(Call call, IOException e) {
