@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.widget.EditText;
 import android.widget.RadioGroup;
@@ -16,8 +17,23 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.myapplication.MainActivity;
 import com.example.myapplication.Model.TaskModel;
 import com.example.myapplication.R;
+import com.example.myapplication.ServerURL;
+import com.example.myapplication.WorkspaceDetailActivity;
+
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class AddTaskDialogFragment extends DialogFragment {
 
@@ -50,24 +66,21 @@ public class AddTaskDialogFragment extends DialogFragment {
                             switch(radioGroupRG.getCheckedRadioButtonId()) {
                                 case R.id.idRBDialogOpen:
                                     status = open;
-                                    openTaskModelArrayList.add(new TaskModel(title,description,priority,assignee,status));
 //                                    StatusOpenFragment statusOpenFragment = (StatusOpenFragment) getActivity().getSupportFragmentManager().findFragmentByTag(getString(R.string.status_open_fragment));
 //                                    statusOpenFragment.notifyUpdateOpenArrayList();
                                     break;
                                 case R.id.idRBDialogInProgress:
                                     status = inProgress;
-                                    inProgressTaskModelArrayList.add(new TaskModel(title,description,priority,assignee,status));
 //                                    StatusInProgressFragment statusInProgressFragment = (StatusInProgressFragment) getActivity().getSupportFragmentManager().findFragmentByTag(getString(R.string.status_inprogress_fragment));
 //                                    statusInProgressFragment.notifyUpdateInProgressArrayList();
                                     break;
                                 case R.id.idRBDialogClose:
                                     status = close;
-                                    closeTaskModelArrayList.add(new TaskModel(title,description,priority,assignee,status));
 //                                    StatusCloseFragment statusCloseFragment = (StatusCloseFragment) getActivity().getSupportFragmentManager().findFragmentByTag(getString(R.string.status_close_fragment));
 //                                    statusCloseFragment.notifyUpdateCloseArrayList();
                                     break;
                             }
-
+                            createTask(title,description,priority,assignee,status);
                         }
                     }
                 })
@@ -88,5 +101,59 @@ public class AddTaskDialogFragment extends DialogFragment {
         priorityET = getDialog().findViewById(R.id.idETPriority);
         assigneeET = getDialog().findViewById(R.id.idETAssignee);
         radioGroupRG = getDialog().findViewById(R.id.idRGDialog);
+    }
+
+    private void createTask(String title, String description, String priority, String assignee, String status) {
+        try {
+            JSONObject x = new JSONObject();
+            x.put("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
+            x.put("title", title);
+            x.put("description", description);
+            x.put("priority", priority);
+            x.put("assignee", assignee);
+            x.put("status", status);
+            // client to send request.
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            // create request.
+            Request rq = new Request.Builder().url(ServerURL.createWorkspaceTask).post(data).build();
+
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("AddTaskInWorkspace", "Failed to create task.");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject x = new JSONObject(res);
+                        int id = x.getInt("id");
+                        Bundle b = new Bundle();
+                        b.putInt("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
+                        if (status.equals(open)) {
+                            openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
+                        }
+                        else if (status.equals(inProgress)) {
+                            inProgressTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
+                        }
+                        else {
+                            closeTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
+                        }
+                    } catch (Exception e) {
+                        Log.i("AddTaskInWorkspace", "Error in onResponse of add task");
+                        Log.i("AddTaskInWorkspace", e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.i("CreateTask", "Failed Creating task");
+            Log.i("CreateTask", e.getMessage());
+        }
+
     }
 }

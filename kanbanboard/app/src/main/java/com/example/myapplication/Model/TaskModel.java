@@ -3,13 +3,15 @@ package com.example.myapplication.Model;
 import java.io.Serializable;
 
 public class TaskModel implements Serializable {
+    private final int id;
     private String title;
     private String description;
     private String priority;
     private String assignee;
     private String status;
 
-    public TaskModel(String title, String description, String priority, String assignee, String status) {
+    public TaskModel(int id, String title, String description, String priority, String assignee, String status) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.priority = priority;
@@ -56,4 +58,6 @@ public class TaskModel implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public int getId() { return this.id; }
 }

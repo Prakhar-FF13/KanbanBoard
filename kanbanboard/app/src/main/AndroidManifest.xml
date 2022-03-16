@@ -26,5 +26,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".WorkSpace"/>
+        <activity
+            android:name=".WorkspaceDetailActivity"
+            android:exported="false" />
     </application>
 </manifest>

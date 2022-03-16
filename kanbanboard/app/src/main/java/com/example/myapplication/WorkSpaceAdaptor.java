@@ -35,14 +35,16 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
 
     @Override
     public void onBindViewHolder(@NonNull WorkSpaceAdaptor.ViewHolder holder, int position) {
-        holder.mworkspace_name.setText(workspaceList.get(position).getWorkspace_name());
-        holder.mworkspace_member_count.setText(Integer.toString(workspaceList.get(position).getWorkspace_member_count()));
+        WorkSpaceModel workspace = workspaceList.get(position);
+        holder.mworkspace_name.setText(workspace.getWorkspace_name());
+        holder.mworkspace_member_count.setText(Integer.toString(workspace.getWorkspace_member_count()));
         holder.mcardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 // @TODO show workspace details activity. Intent
-//                Intent intent = new Intent(context, MainActivity.class);
-//                context.startActivity(intent);
+                Intent intent = new Intent(context, WorkspaceDetailActivity.class);
+                intent.putExtra("wid", workspace.getWid());
+                context.startActivity(intent);
             }
         });
     }

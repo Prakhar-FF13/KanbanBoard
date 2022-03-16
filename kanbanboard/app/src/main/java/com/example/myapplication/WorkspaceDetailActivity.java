@@ -13,10 +13,12 @@ import com.example.myapplication.Fragment.AddTaskDialogFragment;
 import com.example.myapplication.Fragment.StatusCloseFragment;
 import com.example.myapplication.Fragment.StatusInProgressFragment;
 import com.example.myapplication.Fragment.StatusOpenFragment;
+import com.example.myapplication.Model.TaskModel;
 
 public class WorkspaceDetailActivity extends AppCompatActivity {
 
     private Button openBtn,inProgressBtn,closeBtn,addTaskBtn;
+    private int wid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,11 +28,28 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
         inProgressBtn = findViewById(R.id.idBtnInProgress);
         closeBtn = findViewById(R.id.idBtnClose);
         addTaskBtn = findViewById(R.id.idBtnAddTask);
+        wid = getIntent().getIntExtra("wid", -1);
+
+        Bundle b = new Bundle();
+        b.putInt("wid", wid);
+
+        StatusOpenFragment statusOpenFragment = new StatusOpenFragment();
+        statusOpenFragment.setArguments(b);
+        loadFragment(statusOpenFragment,getString(R.string.status_open_fragment));
+
+        StatusInProgressFragment statusInProgressFragment = new StatusInProgressFragment();
+        statusInProgressFragment.setArguments(b);
+        loadFragment(statusInProgressFragment,getString(R.string.status_inprogress_fragment));
+
+        StatusCloseFragment statusCloseFragment = new StatusCloseFragment();
+        statusCloseFragment.setArguments(b);
+        loadFragment(statusCloseFragment,getString(R.string.status_close_fragment));
 
         openBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 StatusOpenFragment statusOpenFragment = new StatusOpenFragment();
+                statusOpenFragment.setArguments(b);
                 loadFragment(statusOpenFragment,getString(R.string.status_open_fragment));
             }
         });
@@ -39,6 +58,7 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 StatusInProgressFragment statusInProgressFragment = new StatusInProgressFragment();
+                statusInProgressFragment.setArguments(b);
                 loadFragment(statusInProgressFragment,getString(R.string.status_inprogress_fragment));
             }
         });
@@ -47,6 +67,7 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 StatusCloseFragment statusCloseFragment = new StatusCloseFragment();
+                statusCloseFragment.setArguments(b);
                 loadFragment(statusCloseFragment,getString(R.string.status_close_fragment));
             }
         });
@@ -61,6 +82,9 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
 
     private void showDialog() {
         AddTaskDialogFragment addTaskDialogFragment = new AddTaskDialogFragment();
+        Bundle b = new Bundle();
+        b.putInt("wid", wid);
+        addTaskDialogFragment.setArguments(b);
         addTaskDialogFragment.show(getSupportFragmentManager(),getString(R.string.add_task_dialog_fragment));
     }
 
@@ -71,4 +95,7 @@ public class WorkspaceDetailActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
+    public int getWid() {
+        return this.wid;
+    }
 }

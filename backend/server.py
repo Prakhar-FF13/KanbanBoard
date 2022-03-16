@@ -165,3 +165,64 @@ def createworkspace():
         })
     else:
         return json.dumps({"code": 400, "message": "Failed to create workspace"})
+
+
+@app.route('/workspacetasks', methods=['POST'])
+def workspacetasks():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        wid = x['wid']
+        status = x['status']
+        conn = getSqliteConnection()
+        data = conn.execute(
+            'SELECT * FROM workspaceTasks WHERE wid=(?) AND status=(?)',
+            (wid, status)).fetchall()
+
+        if (len(data) == 0):
+            return json.dumps({"code": 200, "message": "No workspace task found"})
+
+        workspaceTasks = []
+        for d in data:
+            workspaceTasks.append({
+                "id": d["id"],
+                "title": d["title"],
+                "description": d["description"],
+                "priority": d["priority"],
+                "assignee": d["assignee"],
+                "status": d["status"],
+            })
+
+        print(workspaceTasks)
+
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Workspace Tasks found", "workspaceTasks": workspaceTasks})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to get workspace tasks"})
+
+
+@app.route('/createworkspacetask', methods=['POST'])
+def createworkspacetask():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        wid = x["wid"]
+        title = x["title"]
+        description = x["description"]
+        priority = x["priority"]
+        assignee = x["assignee"]
+        status = x["status"]
+        conn = getSqliteConnection()
+        cursor = conn.cursor()
+        cursor.execute(
+            'INSERT INTO WORKSPACETASKS(wid, title, description, assignee, status, priority) VALUES(?,?,?,?,?,?)',
+            (wid, title, description, assignee, status, priority))
+        id = cursor.lastrowid
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Workspace Task Created", "id": id})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to create workspace task"})

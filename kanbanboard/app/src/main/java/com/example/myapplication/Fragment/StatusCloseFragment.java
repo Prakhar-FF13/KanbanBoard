@@ -1,10 +1,14 @@
 package com.example.myapplication.Fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -13,8 +17,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.myapplication.Model.TaskModel;
 import com.example.myapplication.R;
 import com.example.myapplication.RecyclerViewAdapter;
+import com.example.myapplication.ServerURL;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter.itemClickListener{
 
@@ -51,16 +68,59 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
 
     //load tasks from server with status as Open
     private void loadData() {
-        closeTaskModelArrayList.add(new TaskModel("title1close","title 1 description...","low","Prakhar","close"));
-        closeTaskModelArrayList.add(new TaskModel("title2close","title 2 description...","medium","Rishabh","close"));
-        closeTaskModelArrayList.add(new TaskModel("title3close","title 3 description...","high","Shubham","close"));
-        closeTaskModelArrayList.add(new TaskModel("title4close","title 4 description...","low","Shivang","close"));
-        closeTaskModelArrayList.add(new TaskModel("title5close","title 5 description...","medium","Aditya","close"));
-        closeTaskModelArrayList.add(new TaskModel("title6close","title 6 description...","low","Prakhar","close"));
-        closeTaskModelArrayList.add(new TaskModel("title7close","title 7 description...","medium","Rishabh","close"));
-        closeTaskModelArrayList.add(new TaskModel("title8close","title 8 description...","high","Shubham","close"));
-        closeTaskModelArrayList.add(new TaskModel("title9close","title 9 description...","low","Shivang","close"));
-        closeTaskModelArrayList.add(new TaskModel("title0close","title 0 description...","medium","Aditya","close"));
+        try {
+            JSONObject x = new JSONObject();
+            x.put("wid", getArguments() != null ? getArguments().get("wid") : -1);
+            x.put("status", "close");
+            // client to send request.
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            // create request.
+            Request rq = new Request.Builder().url(ServerURL.getWorkspaceTasks).post(data).build();
+
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("AddTaskInWorkspace", "Failed to create task.");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject x = new JSONObject(res);
+                        JSONArray tasks = x.getJSONArray("workspaceTasks");
+                        closeTaskModelArrayList = new ArrayList<>();
+                        for(int i = 0; i < tasks.length(); i++) {
+                            JSONObject obj = tasks.getJSONObject(i);
+                            closeTaskModelArrayList.add(new TaskModel(
+                                    obj.getInt("id"),
+                                    obj.getString("title"),
+                                    obj.getString("description"),
+                                    obj.getString("priority"),
+                                    obj.getString("assignee"),
+                                    obj.getString("status")
+                            ));
+                        }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                recyclerViewAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("CloseFragment", "Error in onResponse of add task");
+                        Log.i("CloseFragment", e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e ) {
+            Log.i("CloseFragment", "Error loading data from server");
+            Log.i("CloseFragment", e.getMessage());
+        }
     }
 
     public void notifyUpdateCloseArrayList(){
