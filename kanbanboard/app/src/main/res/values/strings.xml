@@ -103,4 +103,11 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="action_settings">Settings</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="status_open_fragment">status_open_fragment</string>
+    <string name="status_inprogress_fragment">status_inprogress_fragment</string>
+    <string name="status_close_fragment">status_close_fragment</string>
+    <string name="task_model_object">task_model_object</string>
+    <string name="add_task_dialog_fragment">add_task_dialog_fragment</string>
 </resources>
