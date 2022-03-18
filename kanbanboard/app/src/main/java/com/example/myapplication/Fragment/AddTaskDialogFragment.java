@@ -3,9 +3,11 @@ package com.example.myapplication.Fragment;
 import static com.example.myapplication.Fragment.StatusCloseFragment.closeTaskModelArrayList;
 import static com.example.myapplication.Fragment.StatusInProgressFragment.inProgressTaskModelArrayList;
 import static com.example.myapplication.Fragment.StatusOpenFragment.openTaskModelArrayList;
+
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,8 +18,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
-import com.example.myapplication.MainActivity;
 import com.example.myapplication.Model.TaskModel;
 import com.example.myapplication.R;
 import com.example.myapplication.ServerURL;
@@ -42,6 +46,18 @@ public class AddTaskDialogFragment extends DialogFragment {
     private static final String open = "open";
     private static final String inProgress = "inProgress";
     private static final String close = "close";
+    String status = null;
+
+
+
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        Intent intent = new Intent(getContext(), WorkspaceDetailActivity.class);
+        intent.putExtra("wid", getArguments().getInt("wid"));
+        intent.putExtra("status",status);
+        startActivity(intent);
+        super.onDismiss(dialog);
+    }
 
     @NonNull
     @Override
@@ -62,7 +78,6 @@ public class AddTaskDialogFragment extends DialogFragment {
                             String description = descriptionET.getText().toString();
                             String priority = priorityET.getText().toString();
                             String assignee = assigneeET.getText().toString();
-                            String status = null;
                             switch(radioGroupRG.getCheckedRadioButtonId()) {
                                 case R.id.idRBDialogOpen:
                                     status = open;
@@ -101,6 +116,13 @@ public class AddTaskDialogFragment extends DialogFragment {
         priorityET = getDialog().findViewById(R.id.idETPriority);
         assigneeET = getDialog().findViewById(R.id.idETAssignee);
         radioGroupRG = getDialog().findViewById(R.id.idRGDialog);
+    }
+
+    public void loadFragment(Fragment fragment, String tag){
+        FragmentManager fragmentManager = getParentFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.idFrameLayout,fragment,tag);
+        fragmentTransaction.commit();
     }
 
     private void createTask(String title, String description, String priority, String assignee, String status) {
@@ -144,6 +166,10 @@ public class AddTaskDialogFragment extends DialogFragment {
                         else {
                             closeTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
                         }
+
+
+
+
                     } catch (Exception e) {
                         Log.i("AddTaskInWorkspace", "Error in onResponse of add task");
                         Log.i("AddTaskInWorkspace", e.getMessage());
