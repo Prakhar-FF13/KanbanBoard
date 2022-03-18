@@ -25,8 +25,8 @@
         android:minHeight="48dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:textColorHint="#1976D2"
-        tools:ignore="TextContrastCheck"/>
+        android:textColorHint="@color/colorPrimary"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/edit_registeredpassword"
@@ -47,8 +47,8 @@
         android:minHeight="48dp"
         android:paddingStart="5dp"
         android:paddingEnd="5dp"
-        android:textColorHint="#1976D2"
-        tools:ignore="TextContrastCheck"  />
+        android:textColorHint="@color/colorPrimary"
+        tools:ignore="TextContrastCheck" />
 
 </RelativeLayout>
 </ScrollView>

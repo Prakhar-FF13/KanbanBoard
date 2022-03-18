@@ -2,15 +2,19 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -37,6 +41,7 @@ public class WorkSpace extends AppCompatActivity {
 
     private final ArrayList<WorkSpaceModel> workSpaceModelArrayList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
+    private EditText newWorkspaceName;
     private JSONObject user;
     private WorkSpaceAdaptor adapter;
     private Handler wHandler;
@@ -60,17 +65,23 @@ public class WorkSpace extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                final EditText newWorkspaceName = new EditText(view.getContext());
-                final TextView name = new TextView(view.getContext());
-                name.setText("Enter New WorkSpace Name");
-                LinearLayout layout = new LinearLayout(view.getContext());
-                layout.setOrientation(LinearLayout.VERTICAL);
-                layout.addView(name);
-                layout.addView(newWorkspaceName);
-                builder.setMessage("New WorkSpace")
-                        .setTitle("New WorkSpace")
-                        .setView(layout)
-                        .setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+                //final EditText newWorkspaceName = new EditText(view.getContext());
+                //final TextView name = new TextView(view.getContext());
+                //name.setText("Enter New WorkSpace Name");
+                //name.setTextColor(android.R.color.black);
+                //LinearLayout layout = new LinearLayout(view.getContext());
+                //layout.setOrientation(LinearLayout.VERTICAL);
+                //layout.addView(name);
+                //layout.addView(newWorkspaceName);
+                //builder.setMessage("New WorkSpace")
+                //LayoutInflater inflater = getActivity().getLayoutInflater();
+                LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
+                View view1 = inflater.inflate(R.layout.new_workspace_create, null);
+                builder.setView(view1);
+                newWorkspaceName = view1.findViewById(R.id.newWorkspaceName);
+                // builder.setTitle("Add new workspace")
+                        //.setView(layout)
+                builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
                                 String name = newWorkspaceName.getText().toString();
                                 try {
