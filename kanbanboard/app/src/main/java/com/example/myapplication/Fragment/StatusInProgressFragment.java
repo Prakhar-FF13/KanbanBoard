@@ -93,7 +93,7 @@ public class StatusInProgressFragment extends Fragment implements RecyclerViewAd
                     try {
                         JSONObject x = new JSONObject(res);
                         JSONArray tasks = x.getJSONArray("workspaceTasks");
-                        inProgressTaskModelArrayList = new ArrayList<>();
+                        inProgressTaskModelArrayList.clear();
                         for(int i = 0; i < tasks.length(); i++) {
                             JSONObject obj = tasks.getJSONObject(i);
                             inProgressTaskModelArrayList.add(new TaskModel(

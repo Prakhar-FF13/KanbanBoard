@@ -93,7 +93,7 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
                     try {
                         JSONObject x = new JSONObject(res);
                         JSONArray tasks = x.getJSONArray("workspaceTasks");
-                        closeTaskModelArrayList = new ArrayList<>();
+                        closeTaskModelArrayList.clear();
                         for(int i = 0; i < tasks.length(); i++) {
                             JSONObject obj = tasks.getJSONObject(i);
                             closeTaskModelArrayList.add(new TaskModel(
