@@ -7,55 +7,21 @@
     android:orientation="vertical"
     tools:context=".WorkspaceDetailActivity">
 
-    <LinearLayout
+    <com.google.android.material.tabs.TabLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:id="@+id/idBtnOpen"
-            android:text="Open"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:ellipsize="none"
-            android:gravity="center"
-            android:singleLine="true"/>
+        android:id="@+id/idTabLayout"
+        android:background="@color/colorThemeBlue"
+        app:tabIndicatorColor="@color/colorThemeGreen"
+        app:tabSelectedTextColor="@color/white"
+        app:tabTextColor="@color/colorThemeGrey"
+        android:elevation="5dp">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/idBtnInProgress"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:text="InProgress"
-            android:ellipsize="none"
-            android:gravity="center"
-            android:singleLine="true"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:id="@+id/idBtnClose"
-            android:layout_weight="1"
-            android:layout_margin="5dp"
-            android:text="Closed"
-            android:ellipsize="none"
-            android:gravity="center"
-            android:singleLine="true"/>
-    </LinearLayout>
-
-    <FrameLayout
+    </com.google.android.material.tabs.TabLayout>
+    <androidx.viewpager.widget.ViewPager
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:id="@+id/idFrameLayout"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:id="@+id/idBtnAddTask"
-        android:text="+" />
+        android:layout_height="match_parent"
+        android:id="@+id/idViewPager"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.example.myapplication.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,7 +11,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,6 +18,7 @@ import com.example.myapplication.Model.TaskModel;
 import com.example.myapplication.R;
 import com.example.myapplication.RecyclerViewAdapter;
 import com.example.myapplication.ServerURL;
+import com.example.myapplication.TaskDetailActivity;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -37,13 +38,15 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
-    public static ArrayList<TaskModel> closeTaskModelArrayList = new ArrayList<>();
+    public static ArrayList<TaskModel> closeTaskModelArrayList;
+    private int wid;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_status_close, container, false);
+        closeTaskModelArrayList = new ArrayList<>();
         loadData();
         recyclerView = view.findViewById(R.id.idRVClose);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -54,16 +57,12 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
 
     @Override
     public void onItemClick(TaskModel taskModel) {
-        TaskDetailFragment taskDetailFragment = new TaskDetailFragment();
         Bundle bundle = new Bundle();
         bundle.putSerializable(getString(R.string.task_model_object),taskModel);
-        taskDetailFragment.setArguments(bundle);
-
-        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.hide(getActivity().getSupportFragmentManager().findFragmentByTag(getString(R.string.status_close_fragment)));
-        transaction.add(R.id.idFrameLayout,taskDetailFragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        bundle.putInt("wid", wid);
+        Intent intent = new Intent(getContext(), TaskDetailActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     //load tasks from server with status as Open
@@ -93,7 +92,7 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
                     try {
                         JSONObject x = new JSONObject(res);
                         JSONArray tasks = x.getJSONArray("workspaceTasks");
-                        closeTaskModelArrayList = new ArrayList<>();
+                        closeTaskModelArrayList.clear();
                         for(int i = 0; i < tasks.length(); i++) {
                             JSONObject obj = tasks.getJSONObject(i);
                             closeTaskModelArrayList.add(new TaskModel(
@@ -123,8 +122,4 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
         }
     }
 
-    public void notifyUpdateCloseArrayList(){
-        recyclerViewAdapter.notifyItemInserted(closeTaskModelArrayList.size()-1);
-        recyclerView.scrollToPosition(closeTaskModelArrayList.size()-1);
-    }
 }

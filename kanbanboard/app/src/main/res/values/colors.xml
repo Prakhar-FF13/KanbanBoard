@@ -10,4 +10,9 @@
     <color name="colorPrimary">#D81B60</color>
     <color name="colorPrimaryDark">#D81B60</color>
     <color name="colorAccent">#0099ff</color>
+    <color name="colorThemeBlue">#140951</color>
+    <color name="colorThemeLightBlue">#152069</color>
+    <color name="colorThemeGreen">#88DEB0</color>
+    <color name="colorThemeGrey">#BEBEBE</color>
+
 </resources>
