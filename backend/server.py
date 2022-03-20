@@ -226,3 +226,26 @@ def createworkspacetask():
         return json.dumps({"code": 200, "message": "Workspace Task Created", "id": id})
     else:
         return json.dumps({"code": 400, "message": "Failed to create workspace task"})
+
+
+@app.route('/updateworkspacetask', methods=['POST'])
+def updateworkspacetask():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        id = x["id"]
+        title = x["title"]
+        description = x["description"]
+        priority = x["priority"]
+        assignee = x["assignee"]
+        status = x["status"]
+        conn = getSqliteConnection()
+        conn.execute(
+            'UPDATE WORKSPACETASKS SET title=(?), description=(?), priority=(?), assignee=(?), status=(?) WHERE id=(?)',
+            (title, description, priority, assignee, status, id))
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Workspace Task Updated"})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to update workspace task"})

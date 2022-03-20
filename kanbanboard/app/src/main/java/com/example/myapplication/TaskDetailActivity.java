@@ -1,8 +1,5 @@
 package com.example.myapplication;
 
-import static com.example.myapplication.Fragment.StatusCloseFragment.closeTaskModelArrayList;
-import static com.example.myapplication.Fragment.StatusInProgressFragment.inProgressTaskModelArrayList;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -45,12 +42,13 @@ public class TaskDetailActivity extends AppCompatActivity {
     private static final String close = "close";
     private String title,description,priority,assignee,createdOn,status;
     private int wid;
+    private int id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
-
+        this.id = getIntent().getIntExtra("id", -1);
         titleET = findViewById(R.id.idETTaskTitle);
         descriptionET = findViewById(R.id.idETTaskDescription);
         assigneeET = findViewById(R.id.idETTaskAssignee);
@@ -144,11 +142,14 @@ public class TaskDetailActivity extends AppCompatActivity {
         try {
             JSONObject x = new JSONObject();
             x.put("wid", wid);
+            x.put("id", this.id);
             x.put("title", title);
             x.put("description", description);
             x.put("priority", priority);
             x.put("assignee", assignee);
             x.put("status", status);
+
+            Log.i("UpdateTask", x.toString());
             // client to send request.
             OkHttpClient client = new OkHttpClient();
             // media type to json, to inform the data is in json format
@@ -156,7 +157,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             // request body.
             RequestBody data = RequestBody.create(x.toString(), JSON);
             // create request.
-            Request rq = new Request.Builder().url(ServerURL.createWorkspaceTask).post(data).build();
+            Request rq = new Request.Builder().url(ServerURL.updateWorkspaceTask).post(data).build();
 
             client.newCall(rq).enqueue(new Callback() {
                 @Override
@@ -170,17 +171,16 @@ public class TaskDetailActivity extends AppCompatActivity {
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        int id = x.getInt("id");
                         Log.i(TAG, "Task Updated Successfully!");
                     } catch (Exception e) {
-                        Log.i("AddTaskInWorkspace", "Error in onResponse of add task");
-                        Log.i("AddTaskInWorkspace", e.getMessage());
+                        Log.i("UpdateTask", "Error in onResponse of update task");
+                        Log.i("UpdateTask", e.getMessage());
                     }
                 }
             });
         } catch (Exception e) {
-            Log.i("CreateTask", "Failed Creating task");
-            Log.i("CreateTask", e.getMessage());
+            Log.i("UpdateTask", "Failed Updating task");
+            Log.i("UpdateTask", e.getMessage());
         }
     }
 

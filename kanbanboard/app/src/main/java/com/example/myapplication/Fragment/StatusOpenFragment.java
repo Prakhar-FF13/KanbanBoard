@@ -1,8 +1,5 @@
 package com.example.myapplication.Fragment;
 
-import static com.example.myapplication.Fragment.StatusCloseFragment.closeTaskModelArrayList;
-import static com.example.myapplication.Fragment.StatusInProgressFragment.inProgressTaskModelArrayList;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -81,6 +78,12 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadData();
+    }
+
     private void showDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
@@ -136,6 +139,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
         Bundle bundle = new Bundle();
         bundle.putSerializable(getString(R.string.task_model_object),taskModel);
         bundle.putInt("wid", wid);
+        bundle.putInt("id", taskModel.getId());
         Intent intent = new Intent(getContext(), TaskDetailActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -167,7 +171,14 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        JSONArray tasks = x.getJSONArray("workspaceTasks");
+                        JSONArray tasks;
+                        try {
+                            tasks = x.getJSONArray("workspaceTasks");
+                        } catch (Exception e) {
+                            Log.i("OpenFragment", "Error getting workspace tasks");
+                            Log.i("OpenFragment", e.getMessage());
+                            tasks = new JSONArray();
+                        }
                         openTaskModelArrayList.clear();
                         for(int i = 0; i < tasks.length(); i++) {
                             JSONObject obj = tasks.getJSONObject(i);
@@ -232,12 +243,12 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                         b.putInt("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
                         if (status.equals(open)) {
                             openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
-                        }
-                        else if (status.equals(inProgress)) {
-                            inProgressTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
-                        }
-                        else {
-                            closeTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    recyclerViewAdapter.notifyDataSetChanged();
+                                }
+                            });
                         }
                     } catch (Exception e) {
                         Log.i("AddTaskInWorkspace", "Error in onResponse of add task");

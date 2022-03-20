@@ -38,7 +38,7 @@ public class StatusInProgressFragment extends Fragment implements RecyclerViewAd
 
     private RecyclerView recyclerView;
     private RecyclerViewAdapter recyclerViewAdapter;
-    public static ArrayList<TaskModel> inProgressTaskModelArrayList;
+    public ArrayList<TaskModel> inProgressTaskModelArrayList;
     private int wid;
 
     @Override
@@ -57,16 +57,23 @@ public class StatusInProgressFragment extends Fragment implements RecyclerViewAd
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        loadData();
+    }
+
+    @Override
     public void onItemClick(TaskModel taskModel) {
         Bundle bundle = new Bundle();
         bundle.putSerializable(getString(R.string.task_model_object),taskModel);
         bundle.putInt("wid", wid);
+        bundle.putInt("id", taskModel.getId());
         Intent intent = new Intent(getContext(), TaskDetailActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
 
-    //load tasks from server with status as Open
+    //load tasks from server with status as inProgress
     private void loadData() {
         try {
             JSONObject x = new JSONObject();
@@ -92,7 +99,14 @@ public class StatusInProgressFragment extends Fragment implements RecyclerViewAd
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        JSONArray tasks = x.getJSONArray("workspaceTasks");
+                        JSONArray tasks;
+                        try {
+                            tasks = x.getJSONArray("workspaceTasks");
+                        } catch (Exception e) {
+                            Log.i("inProgressFragment", "Error getting workspace tasks");
+                            Log.i("inProgressFragment", e.getMessage());
+                            tasks = new JSONArray();
+                        }
                         inProgressTaskModelArrayList.clear();
                         for(int i = 0; i < tasks.length(); i++) {
                             JSONObject obj = tasks.getJSONObject(i);

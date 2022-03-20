@@ -8,4 +8,5 @@ public class ServerURL {
     public static String createWorkspace = "http://10.0.2.2:5000/createworkspace";
     public static String getWorkspaceTasks = "http://10.0.2.2:5000/workspacetasks";
     public static String createWorkspaceTask = "http://10.0.2.2:5000/createworkspacetask";
+    public static String updateWorkspaceTask = "http://10.0.2.2:5000/updateworkspacetask";
 }
