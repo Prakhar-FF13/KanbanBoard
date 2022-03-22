@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -172,6 +174,12 @@ public class TaskDetailActivity extends AppCompatActivity {
                     try {
                         JSONObject x = new JSONObject(res);
                         Log.i(TAG, "Task Updated Successfully!");
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(TaskDetailActivity.this, "Task Updated Successfully!", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     } catch (Exception e) {
                         Log.i("UpdateTask", "Error in onResponse of update task");
                         Log.i("UpdateTask", e.getMessage());
