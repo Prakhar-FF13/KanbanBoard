@@ -35,3 +35,11 @@ CREATE TABLE workspaceTasks (
   priority VARCHAR(255) NOT NULL,
   FOREIGN KEY (wid) REFERENCES workspaces (wid) ON DELETE CASCADE
 );
+DROP TABLE IF EXISTS workspacecollaborators;
+
+CREATE TABLE workspacecollaborators(
+
+    wid INTEGER,
+    leader,
+    username_collaborators varchar(255)
+);
