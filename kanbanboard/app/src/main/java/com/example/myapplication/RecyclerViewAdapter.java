@@ -65,6 +65,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 taskModelArrayList.remove(holder.getAdapterPosition());
+//                                delete in db also
                                 notifyItemRemoved(holder.getAdapterPosition());
                             }
                         })

@@ -40,6 +40,6 @@ DROP TABLE IF EXISTS workspacecollaborators;
 CREATE TABLE workspacecollaborators(
 
     wid INTEGER,
-    leader,
-    username_collaborators varchar(255)
+    leader varchar(255),
+    username_collaborators varchar(255),
 );
