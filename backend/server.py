@@ -110,21 +110,44 @@ def workspaces():
         data = conn.execute(
             'SELECT * FROM workspaceusers WHERE username=(?)',
             (username,)).fetchall()
-
-        if (len(data) == 0):
-            return json.dumps({"code": 200, "message": "No workspaces found"})
+        data1 = conn.execute(
+            'SELECT * FROM workspacecollaborators WHERE username_collaborators=(?)',
+            (username,)).fetchall()
+        # if (len(data) == 0):
+        #     return json.dumps({"code": 200, "message": "No workspaces found"})
+        
 
         workspaces = []
-        for d in data:
-            x = conn.execute(
-                'SELECT * FROM workspaces WHERE wid=(?)',
-                (d["wid"], )).fetchall()
-            workspaces.append({
-                "wid": x[0]["wid"],
-                "name": x[0]["name"],
-                "createdBy": x[0]["createdBy"],
-                "members": x[0]["members"]
-            })
+        # for d in data:
+        #     x = conn.execute(
+        #         'SELECT * FROM workspaces WHERE wid=(?)',
+        #         (d["wid"], )).fetchall()
+        #     workspaces.append({
+        #         "wid": x[0]["wid"],
+        #         "name": x[0]["name"],
+        #         "createdBy": x[0]["createdBy"],
+        #         "members": x[0]["members"]
+        #     })
+        colabdata = []
+        if len(data1)!=0:
+           
+            for d in data1:
+                colabdata.append(d["wid"])
+        if len(data)!=0:
+            for d in data:
+                colabdata.append(d["wid"])
+        colabdata = set(colabdata)
+        if len(colabdata)!=0:    
+            for mwid in colabdata:
+                x = conn.execute(
+                    'SELECT * FROM workspaces WHERE wid=(?)',
+                    (mwid, )).fetchall()
+                workspaces.append({
+                    "wid": x[0]["wid"],
+                    "name": x[0]["name"],
+                    "createdBy": x[0]["createdBy"],
+                    "members": x[0]["members"]
+                })                    
 
         print(workspaces)
 
@@ -146,8 +169,11 @@ def createworkspace():
         conn = getSqliteConnection()
         conn.execute(
             "INSERT INTO WORKSPACES(name,createdBy) VALUES(?,?)", (name, createdBy))
+        
         data = conn.execute(
             "SELECT * FROM WORKSPACES WHERE name=(?) AND createdBy=(?)", (name, createdBy)).fetchall()
+        conn.execute(
+            "INSERT INTO workspacecollaborators(wid,leader,username_collaborators) VALUES(?,?,?)", (data[0]["wid"], data[0]["createdBy"],data[0]["createdBy"]))
         conn.execute(
             "INSERT INTO WORKSPACEUSERS VALUES(?,?)", (
                 data[0]["wid"], data[0]["createdBy"])
@@ -178,6 +204,8 @@ def workspacetasks():
         data = conn.execute(
             'SELECT * FROM workspaceTasks WHERE wid=(?) AND status=(?)',
             (wid, status)).fetchall()
+
+        
 
         if (len(data) == 0):
             return json.dumps({"code": 200, "message": "No workspace task found"})
@@ -249,3 +277,33 @@ def updateworkspacetask():
         return json.dumps({"code": 200, "message": "Workspace Task Updated"})
     else:
         return json.dumps({"code": 400, "message": "Failed to update workspace task"})
+
+
+@app.route('/addcollaborators', methods=['POST'])
+def addcollaborators():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        wid = x['wid']
+        leader = x['leader']
+        username_collaborators = x['username_collaborators']
+        conn = getSqliteConnection()
+        conn.execute(
+            "INSERT INTO workspacecollaborators(wid,leader,username_collaborators) VALUES(?,?,?)", (wid, leader, username_collaborators))
+        data =  conn.execute(
+            "SELECT * FROM WORKSPACES WHERE wid=(?)", (wid, )).fetchall()
+        prev = data[0]['members']
+        conn.execute("UPDATE WORKSPACES set members=(?) where wid =(?)",(prev+1, wid))
+        conn.commit()
+        conn.close()
+
+        return json.dumps({
+            "code": 200,
+            "message": "Collaborators added",
+            "wid": x["wid"],
+            "leader": x["leader"],
+            "username_collaborators": x["username_collaborators"],
+            
+        })
+    else:
+        return json.dumps({"code": 400, "message": "Failed to create workspace"})

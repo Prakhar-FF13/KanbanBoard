@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_marginHorizontal="10dp"
     android:layout_marginTop="10dp"
     app:cardElevation="50dp"
     android:background="@drawable/background_round_white">
-
+    <ImageButton
+        android:id="@+id/workspace_menus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:background="@drawable/background_round_white"
+        android:src="@drawable/ic_baseline_more_vert_24"
+         />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -30,8 +37,15 @@
             android:text=""/>
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:id="@+id/projectleader"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="Leader"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:id="@+id/workspace_member_count"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
@@ -42,6 +56,7 @@
             android:textStyle="bold"
             android:drawableStart="@drawable/ic_baseline_people_outline_24"
             android:drawablePadding="5dp"/>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

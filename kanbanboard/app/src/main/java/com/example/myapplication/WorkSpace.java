@@ -1,15 +1,8 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,8 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -45,6 +40,19 @@ public class WorkSpace extends AppCompatActivity {
     private JSONObject user;
     private WorkSpaceAdaptor adapter;
     private Handler wHandler;
+
+    @Override
+    protected void onStart() {
+        wHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                fetchData();
+                adapter.notifyDataSetChanged();
+            }
+        });
+        super.onStart();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +67,7 @@ public class WorkSpace extends AppCompatActivity {
             e.printStackTrace();
             Log.i("Workspace", "Error in converting user object from intent.extra");
         }
-        fetchData();
+//        fetchData();
         floatingActionButton = findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,8 +149,10 @@ public class WorkSpace extends AppCompatActivity {
             }
         });
     }
+
     private void fetchData() {
         try {
+            workSpaceModelArrayList.clear();
             JSONObject x = new JSONObject();
             x.put("username", this.user.getString("username"));
             OkHttpClient client = new OkHttpClient();

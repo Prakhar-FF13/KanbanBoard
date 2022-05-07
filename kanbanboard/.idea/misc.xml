@@ -46,14 +46,22 @@
         <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/layout_registerdialog.xml" value="0.1431159420289855" />
         <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/new_workspace_create.xml" value="0.264" />
         <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/workspace_item.xml" value="0.21693840579710144" />
+        <entry key="app/src/main/res/drawable/background_round_white.xml" value="0.101" />
+        <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.101" />
         <entry key="app/src/main/res/layout-w1240dp/content_scrolling.xml" value="0.1753681392235609" />
         <entry key="app/src/main/res/layout-w936dp/content_scrolling.xml" value="0.2046875" />
+        <entry key="app/src/main/res/layout/activity_add_collobarators.xml" value="0.13728470111448834" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2677083333333333" />
+        <entry key="app/src/main/res/layout/activity_task_detail.xml" value="0.13728470111448834" />
         <entry key="app/src/main/res/layout/activity_work_space.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_workspace_detail.xml" value="0.13728470111448834" />
         <entry key="app/src/main/res/layout/content_scrolling.xml" value="0.27291666666666664" />
-        <entry key="app/src/main/res/layout/workspace_item.xml" value="0.20912547528517111" />
+        <entry key="app/src/main/res/layout/dialog_add_task.xml" value="0.13728470111448834" />
+        <entry key="app/src/main/res/layout/new_workspace_create.xml" value="0.19202898550724637" />
+        <entry key="app/src/main/res/layout/workspace_item.xml" value="0.1" />
         <entry key="app/src/main/res/menu/menu_workspace.xml" value="0.27291666666666664" />
+        <entry key="app/src/main/res/menu/workspace_menu_items.xml" value="0.28229166666666666" />
       </map>
     </option>
   </component>
