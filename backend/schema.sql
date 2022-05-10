@@ -41,5 +41,5 @@ CREATE TABLE workspacecollaborators(
 
     wid INTEGER,
     leader varchar(255),
-    username_collaborators varchar(255),
+    username_collaborators varchar(255)
 );

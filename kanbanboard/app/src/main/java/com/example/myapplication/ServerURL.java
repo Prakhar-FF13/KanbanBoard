@@ -10,5 +10,7 @@ public class ServerURL {
     public static String createWorkspaceTask = "http://10.0.2.2:5000/createworkspacetask";
     public static String updateWorkspaceTask = "http://10.0.2.2:5000/updateworkspacetask";
     public static String addCollaborators = "http://10.0.2.2:5000/addcollaborators";
+    public static String showcollaborators = "http://10.0.2.2:5000/showcollaborators";
+    public static String removecollab = "http://10.0.2.2:5000/removecollab";
 
 }

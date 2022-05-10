@@ -307,3 +307,55 @@ def addcollaborators():
         })
     else:
         return json.dumps({"code": 400, "message": "Failed to create workspace"})
+
+
+@app.route('/showcollaborators', methods=['POST'])
+def showcollaborators():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        wid = x['wid']
+        conn = getSqliteConnection()
+        data = conn.execute(
+            "SELECT * FROM workspacecollaborators WHERE wid=(?)",
+            (wid,)).fetchall()
+        
+        if (len(data) == 0):
+            return json.dumps({"code": 200, "message": "No workspaces found"})
+        
+
+        collabs = []
+        for d in data:
+            collabs.append({
+                "wid": d["wid"],
+                "leader": d["leader"],
+                "collab_name": d["username_collaborators"]
+            })
+                       
+
+        print(collabs)
+
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "collaborators found", "collabs": collabs})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to get Collaborators"})
+
+@app.route('/removecollab', methods=['POST'])
+def removecollab():
+    if request.method=='POST':
+        x = json.loads(request.data)
+        wid = x['wid']
+        username = x['username']
+        conn = getSqliteConnection()
+        conn.execute('DELETE FROM workspacecollaborators WHERE wid=(?) AND username_collaborators=(?)',(wid,username))
+        data =  conn.execute(
+            "SELECT * FROM WORKSPACES WHERE wid=(?)", (wid, )).fetchall()
+        prev = data[0]['members']
+        conn.execute("UPDATE WORKSPACES set members=(?) where wid =(?)",(prev-1, wid))
+        conn.commit()
+        conn.close()
+        return json.dumps({"code": 200, "message": "Collabarators deleted success "})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to delete collab  deletion"})

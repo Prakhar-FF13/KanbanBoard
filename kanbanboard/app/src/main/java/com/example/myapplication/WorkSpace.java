@@ -37,7 +37,7 @@ public class WorkSpace extends AppCompatActivity {
     private final ArrayList<WorkSpaceModel> workSpaceModelArrayList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
     private EditText newWorkspaceName;
-    private JSONObject user;
+    public static JSONObject user;
     private WorkSpaceAdaptor adapter;
     private Handler wHandler;
 

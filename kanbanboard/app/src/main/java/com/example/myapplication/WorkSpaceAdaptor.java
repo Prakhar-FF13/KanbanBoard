@@ -66,6 +66,11 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
 //                                delete workspace from db
                                 notifyDataSetChanged();
                                 return true;
+                            case R.id.show_collaborators:
+                                Intent intent1 = new Intent(context, showCollobarators.class);
+                                intent1.putExtra("wid",workspace.getWid());
+                                context.startActivity(intent1);
+                                return true;
                             default:
                                 return  false;
                         }
