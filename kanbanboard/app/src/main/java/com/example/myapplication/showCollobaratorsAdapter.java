@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -52,7 +50,7 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
 
     @Override
     public void onBindViewHolder(@NonNull showCollobaratorsAdapter.ViewHolder holder, int position) {
-    collabListModel collab = collablist.get(position);
+    collabListModel collab = collablist.get(holder.getAdapterPosition());
     holder.mcollabname.setText(collab.getCollabname());
         try {
             String muser = WorkSpace.user.getString("username");
@@ -68,6 +66,8 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                 public void onClick(View view) {
                     if(muser.equals(collab.getDesignation())){
                         deletecollab(collab.getWid(), collab.getCollabname());
+                        collablist.remove(holder.getAdapterPosition());
+                        notifyDataSetChanged();
                     }else{
                         Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
                     }
@@ -106,7 +106,7 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
             client.newCall(rq).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                    Log.i("AddTaskInWorkspace", "Failed to create task.");
+                    Log.i("RemoveCollaborator", "Failed to remove Collaborator.");
 
                 }
 
@@ -115,23 +115,21 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        Log.i(TAG, "Task Updated Successfully!");
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
-                                notifyDataSetChanged();
                                 Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
                             }
                         });
                     } catch (Exception e) {
-                        Log.i("UpdateTask", "Error in onResponse of update task");
-                        Log.i("UpdateTask", e.getMessage());
+                        Log.i("RemoveCollaborator", "Error in onResponse of remove collaborator");
+                        Log.i("RemoveCollaborator", e.getMessage());
                     }
                 }
             });
         } catch (Exception e) {
-            Log.i("UpdateTask", "Failed Updating task");
-            Log.i("UpdateTask", e.getMessage());
+            Log.i("RemoveCollaborator", "Failed Removing Collaborator");
+            Log.i("RemoveCollaborator", e.getMessage());
         }
     }
     class ViewHolder extends  RecyclerView.ViewHolder{
