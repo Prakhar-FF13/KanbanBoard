@@ -192,6 +192,33 @@ def createworkspace():
         return json.dumps({"code": 400, "message": "Failed to create workspace"})
 
 
+@app.route('/deleteworkspace', methods=['POST'])
+def deleteworkspace():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        wid = x['wid']
+        conn = getSqliteConnection()
+        conn.execute(
+            "DELETE FROM WORKSPACETASKS WHERE wid=(?)", (wid, ))
+        conn.execute(
+            "DELETE FROM workspacecollaborators WHERE wid=(?)", (wid, ))
+        conn.execute(
+            "DELETE FROM WORKSPACEUSERS WHERE wid=(?)", (wid, )
+        )
+        conn.execute(
+            "DELETE FROM WORKSPACES WHERE wid=(?)", (wid,))
+        conn.commit()
+        conn.close()
+
+        return json.dumps({
+            "code": 200,
+            "message": "Workspace deleted",
+        })
+    else:
+        return json.dumps({"code": 400, "message": "Failed to delete workspace"})
+
+
 @app.route('/workspacetasks', methods=['POST'])
 def workspacetasks():
     if request.method == 'POST':

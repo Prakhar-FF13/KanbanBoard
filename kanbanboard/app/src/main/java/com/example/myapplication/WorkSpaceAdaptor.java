@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,7 +16,18 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.ViewHolder> {
 
@@ -62,8 +74,43 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
                                 context.startActivity(intent);
                                 return true;
                             case R.id.delete_workspace:
-                                workspaceList.remove(position);
-//                                delete workspace from db
+                                JSONObject x = new JSONObject();
+                                try {
+                                    x.put("wid", workspaceList.get(holder.getAdapterPosition()).getWid());
+                                } catch (Exception e) {
+                                    Log.e("DeleteWorkspace", e.toString());
+                                }
+
+                                Log.i("DeleteWorkspace", x.toString());
+                                // client to send request.
+                                OkHttpClient client = new OkHttpClient();
+                                // media type to json, to inform the data is in json format
+                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                // request body.
+                                RequestBody data = RequestBody.create(x.toString(), JSON);
+                                // create request.
+                                Request rq = new Request.Builder().url(ServerURL.deleteWorkspace).post(data).build();
+
+                                client.newCall(rq).enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                        Log.i("DeleteWorkspace", "Failed to delete workspace.");
+
+                                    }
+
+                                    @Override
+                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                        String res = response.body().string();
+                                        try {
+                                            JSONObject x = new JSONObject(res);
+                                        } catch (Exception e) {
+                                            Log.i("DeleteWorkspace", "Error in onResponse of delete workspace");
+                                            Log.i("DeleteWorkspace", e.getMessage());
+                                        }
+                                    }
+                                });
+
+                                workspaceList.remove(holder.getAdapterPosition());
                                 notifyDataSetChanged();
                                 return true;
                             default:

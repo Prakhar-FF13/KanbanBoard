@@ -81,7 +81,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 JSONObject x = new JSONObject();
                                 try {
-                                    x.put("id", taskModelArrayList.get(position).getId());
+                                    x.put("id", taskModelArrayList.get(holder.getAdapterPosition()).getId());
                                 } catch (Exception e) {
                                     Log.e("DeleteTask", e.toString());
                                 }
@@ -109,7 +109,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                                         try {
                                             JSONObject x = new JSONObject(res);
                                         } catch (Exception e) {
-                                            Log.i("DeleteTask", "Error in onResponse of update task");
+                                            Log.i("DeleteTask", "Error in onResponse of delete task");
                                             Log.i("DeleteTask", e.getMessage());
                                         }
                                     }
