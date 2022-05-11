@@ -7,24 +7,24 @@
     tools:context=".WorkSpace"
     android:background="#e5fbe5">
 
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:text="WorkSpaces"
-        android:textColor="@color/white"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:background="@color/colorThemeBlue"/>
+<!--    <TextView-->
+<!--        android:id="@+id/textView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_gravity="center_vertical"-->
+<!--        android:text="WorkSpaces"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:textSize="20sp"-->
+<!--        android:textStyle="bold"-->
+<!--        android:padding="10dp"-->
+<!--        android:background="@color/colorThemeBlue"/>-->
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/workspace_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/workspace_item">
 

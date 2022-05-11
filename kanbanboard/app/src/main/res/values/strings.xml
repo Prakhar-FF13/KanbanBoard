@@ -28,4 +28,6 @@
     <string name="collection_of_different_workspaces">collection of different workspaces</string>
     <string name="enter_the_name_of_new_workspace">Add new workspace</string>
     <string name="enter_the_name_workspace">Enter workspace name</string>
+    <string name="menu_drawer_open">Drawer Open</string>
+    <string name="menu_drawer_close">Drawer Close</string>
 </resources>

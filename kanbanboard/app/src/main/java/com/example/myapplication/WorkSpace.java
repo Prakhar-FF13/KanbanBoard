@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.databinding.ActivityWorkSpaceBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -32,7 +33,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class WorkSpace extends AppCompatActivity {
+public class WorkSpace extends DrawerBase {
 
     private final ArrayList<WorkSpaceModel> workSpaceModelArrayList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
@@ -40,6 +41,7 @@ public class WorkSpace extends AppCompatActivity {
     public static JSONObject user;
     private WorkSpaceAdaptor adapter;
     private Handler wHandler;
+    ActivityWorkSpaceBinding activityWorkSpaceBinding;
 
     @Override
     protected void onStart() {
@@ -56,7 +58,10 @@ public class WorkSpace extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_space);
+        activityWorkSpaceBinding = ActivityWorkSpaceBinding.inflate(getLayoutInflater());
+        setContentView(activityWorkSpaceBinding.getRoot());
+        allocateActivityTitle("WorkSpace");
+        //setContentView(R.layout.activity_work_space);
         RecyclerView workspaceRecyclerView = findViewById(R.id.workspace_view);
         adapter = new WorkSpaceAdaptor(workSpaceModelArrayList);
         workspaceRecyclerView.setAdapter(adapter);

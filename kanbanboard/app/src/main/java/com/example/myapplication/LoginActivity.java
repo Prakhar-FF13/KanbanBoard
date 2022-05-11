@@ -96,7 +96,10 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 JSONObject x = new JSONObject(res);
                                 if (x.getInt("code") == 200 && x.getString("message").equals("Logged In")) {
-                                    Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
+//                                    Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
+//                                    workspaceintent.putExtra("user", x.toString());
+//                                    startActivity(workspaceintent);
+                                    Intent workspaceintent = new Intent(getApplicationContext(), UploadImage.class);
                                     workspaceintent.putExtra("user", x.toString());
                                     startActivity(workspaceintent);
                                 } else {
