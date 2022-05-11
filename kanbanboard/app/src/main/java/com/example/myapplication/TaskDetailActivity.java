@@ -24,8 +24,10 @@ import com.example.myapplication.Model.CommentModel;
 import com.example.myapplication.Model.TaskModel;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Comment;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +68,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private String title,description,priority,assignee,createdOn,status;
     private int wid;
     private int id;
+    String username="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -181,7 +184,6 @@ public class TaskDetailActivity extends AppCompatActivity {
                     String comment = commentET.getText().toString();
                     Date date = new Date();
                     long currentTimeMilli = date.getTime();
-                    String username="";
                     try {
                         username = WorkSpace.user.getString("username");
                     } catch (JSONException e) {
@@ -189,11 +191,59 @@ public class TaskDetailActivity extends AppCompatActivity {
                     }
 
                     //-----------------add to database---------------------
-                    commentModelArrayList.add(new CommentModel(id,comment,currentTimeMilli+"",username));
-                    commentAdapter.notifyDataSetChanged();
-                    recyclerView.scrollToPosition(commentModelArrayList.size()-1);
-                    commentET.setText("");
-                    Toast.makeText(TaskDetailActivity.this, "Comment posted successfully!", Toast.LENGTH_SHORT).show();
+                    try {
+                        JSONObject x = new JSONObject();
+                        x.put("id", id);
+                        x.put("timestamp", currentTimeMilli+"");
+                        x.put("author", username);
+                        x.put("comment", comment);
+
+                        OkHttpClient client = new OkHttpClient();
+                        // media type to json, to inform the data is in json format
+                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                        // request body.
+                        RequestBody data = RequestBody.create(x.toString(), JSON);
+                        // create request.
+                        Request rq = new Request.Builder().url(ServerURL.addComment).post(data).build();
+
+                        client.newCall(rq).enqueue(new Callback() {
+                            @Override
+                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                Log.i("AddCommentOnTask", "Failed to create comment.");
+                            }
+
+                            @Override
+                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                String res = response.body().string();
+                                try {
+                                    JSONObject x = new JSONObject(res);
+                                    Log.i(TAG, "Comment Added Successfully!");
+                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            CommentModel cmt = new CommentModel(id,comment,currentTimeMilli+"",username);
+                                            try {
+                                                cmt.setCid(x.getInt("cid"));
+                                            } catch (Exception e) {
+                                                Log.i("AddCommentOnTask", "Error adding Cid to comments array");
+                                                Log.i("AddCommentOnTask", e.getMessage());
+                                            }
+                                            commentModelArrayList.add(cmt);
+                                            commentAdapter.notifyItemInserted(commentModelArrayList.size() - 1);
+                                            recyclerView.scrollToPosition(commentModelArrayList.size()-1);
+                                            commentET.setText("");
+                                            Toast.makeText(TaskDetailActivity.this, "Comment posted successfully!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } catch (Exception e) {
+                                    Log.i("AddCommentOnTask", "Error in onResponse of add comment");
+                                    Log.i("AddCommentOnTask", e.getMessage());
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("AddCommentOnTask", "Error preparing data for adding comment");
+                    }
                 }
             }
         });
@@ -201,11 +251,57 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private void loadComments() {
         //-----------------load comments with taskId=id from database---------------------
-        commentModelArrayList.add(new CommentModel(1,"comment 1","1652214856430","adi"));
-        commentModelArrayList.add(new CommentModel(2,"comment 2","1652214856530","rishabh"));
-        commentModelArrayList.add(new CommentModel(3,"comment 3","1652214856630","shubham"));
-        commentModelArrayList.add(new CommentModel(4,"comment 4","1652214856600","shivang"));
+        try {
+            JSONObject x = new JSONObject();
+            x.put("id", id);
 
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            // create request.
+            Request rq = new Request.Builder().url(ServerURL.fetchComments).post(data).build();
+
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("LoadComments", "Failed to load comments.");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject x = new JSONObject(res);
+                        JSONArray cmts = x.getJSONArray("comments");
+                        for(int i =0; i < cmts.length(); i++) {
+                            JSONObject c = cmts.getJSONObject(i);
+                            CommentModel cmt = new CommentModel(
+                                    c.getInt("taskId"),
+                                    c.getString("comment"),
+                                    c.getString("timestamp"),
+                                    c.getString("author")
+                            );
+                            cmt.setCid(c.getInt("cid"));
+                            commentModelArrayList.add(cmt);
+                        }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                commentAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("LoadComments", "Error in onResponse of load comment");
+                        Log.i("LoadComments", e.getMessage());
+                    }
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i("LoadComments", "Error preparing data for fetching comments from DB");
+        }
     }
 
     private void updateTask(String title, String description, String priority, String assignee, String status) {

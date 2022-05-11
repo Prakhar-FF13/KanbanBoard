@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -27,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Model.CommentModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -92,43 +95,49 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-//                                JSONObject x = new JSONObject();
-//                                try {
-//                                    x.put("id", commentModelArrayList.get(holder.getAdapterPosition()).getCid());
-//                                } catch (Exception e) {
-//                                    Log.e("DeleteComment", e.toString());
-//                                }
-//
-//                                Log.i("DeleteComment", x.toString());
-//                                // client to send request.
-//                                OkHttpClient client = new OkHttpClient();
-//                                // media type to json, to inform the data is in json format
-//                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-//                                // request body.
-//                                RequestBody data = RequestBody.create(x.toString(), JSON);
-//                                // create request.
-//                                Request rq = new Request.Builder().url(ServerURL.deleteWorkspaceTask).post(data).build();
-//
-//                                client.newCall(rq).enqueue(new Callback() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-//                                        Log.i("DeleteComment", "Failed to delete task.");
-//
-//                                    }
-//
-//                                    @Override
-//                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-//                                        String res = response.body().string();
-//                                        try {
-//                                            JSONObject x = new JSONObject(res);
-//                                        } catch (Exception e) {
-//                                            Log.i("DeleteComment", "Error in onResponse of delete comment");
-//                                            Log.i("DeleteComment", e.getMessage());
-//                                        }
-//                                    }
-//                                });
-                                    commentModelArrayList.remove(holder.getAdapterPosition());
-                                    notifyItemRemoved(holder.getAdapterPosition());
+                                    try {
+                                        JSONObject x = new JSONObject();
+                                        x.put("cid", commentModelArrayList.get(holder.getLayoutPosition()).getCid());
+                                        Log.i("test", x.toString());
+
+                                        OkHttpClient client = new OkHttpClient();
+                                        // media type to json, to inform the data is in json format
+                                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                        // request body.
+                                        RequestBody data = RequestBody.create(x.toString(), JSON);
+                                        // create request.
+                                        Request rq = new Request.Builder().url(ServerURL.deleteComment).post(data).build();
+
+                                        client.newCall(rq).enqueue(new Callback() {
+                                            @Override
+                                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                Log.i("DeleteComment", "Failed to delete comment.");
+                                            }
+
+                                            @Override
+                                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                String res = response.body().string();
+                                                try {
+                                                    JSONObject x = new JSONObject(res);
+                                                    commentModelArrayList.remove(holder.getAdapterPosition());
+                                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            notifyItemRemoved(holder.getAdapterPosition());
+                                                        }
+                                                    });
+                                                } catch (Exception e) {
+                                                    Log.i("DeleteComment", "Error in onResponse of delete comment");
+                                                    Log.i("DeleteComment", e.getMessage());
+                                                }
+                                            }
+                                        });
+
+                                    } catch (Exception e) {
+                                        Log.i("DeleteComment", "Error preparing to delete comment");
+                                        Log.i("DeleteComment", e.getMessage());
+                                    }
+
                                 }
                             })
                             .setNegativeButton("No", new DialogInterface.OnClickListener() {

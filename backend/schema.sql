@@ -40,8 +40,20 @@ CREATE TABLE workspaceTasks (
 DROP TABLE IF EXISTS workspacecollaborators;
 
 CREATE TABLE workspacecollaborators(
-
     wid INTEGER,
     leader varchar(255),
     username_collaborators varchar(255)
+);
+
+
+
+DROP TABLE IF EXISTS taskcomments;
+
+CREATE TABLE taskcomments(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tid INTEGER,
+    author varchar(255) NOT NULL,
+    timestamp varchar(255),
+    comment TEXT,
+    FOREIGN KEY (tid) REFERENCES workspaceTasks (id) ON DELETE CASCADE
 );

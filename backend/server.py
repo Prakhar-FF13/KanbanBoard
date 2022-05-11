@@ -403,3 +403,75 @@ def removecollab():
         return json.dumps({"code": 200, "message": "Collabarators deleted success "})
     else:
         return json.dumps({"code": 400, "message": "Failed to delete collab  deletion"})
+
+
+@app.route('/addcomment', methods=['POST'])
+def addcomment():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        tid = x['id']
+        author = x['author']
+        comment = x['comment']
+        timestamp = x['timestamp']
+        conn = getSqliteConnection()
+        curr = conn.execute(
+            "INSERT INTO taskcomments(tid, author, comment, timestamp) values(?,?,?,?) RETURNING id;",
+            (tid, author, comment, timestamp)
+        )
+        cid = next(curr)["id"]
+        conn.commit()
+        conn.close()
+        return json.dumps({"code": 200, "message": "Comment added successfully", "cid": cid})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to create comment"})
+
+
+@app.route('/fetchcomments', methods=['POST'])
+def fetchcomments():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        tid = x['id']
+
+        conn = getSqliteConnection()
+        data = conn.execute(
+            "SELECT * from taskcomments WHERE tid=(?)",
+            (tid, )
+        ).fetchall()
+        conn.commit()
+        conn.close()
+
+        if (len(data) == 0):
+            return json.dumps({"code": 200, "message": "No comments found"})
+
+        comments = []
+        for d in data:
+            comments.append({
+                "cid": d["id"],
+                "comment": d["comment"],
+                "author": d["author"],
+                "timestamp": d["timestamp"],
+                "taskId": d["tid"],
+            })
+
+        return json.dumps({"code": 200, "message": "Comment added successfully", "comments": comments})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to create comment"})
+
+
+@app.route('/deletecomment', methods=['POST'])
+def deletecomment():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        id = x['cid']
+
+        conn = getSqliteConnection()
+        conn.execute(
+            "DELETE FROM taskcomments WHERE id=(?)",
+            (id, )
+        )
+        conn.commit()
+        conn.close()
+
+        return json.dumps({"code": 200, "message": "Comment deleted successfully"})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to delete comment"})
