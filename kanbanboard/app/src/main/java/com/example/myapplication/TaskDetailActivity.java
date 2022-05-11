@@ -2,7 +2,11 @@ package com.example.myapplication;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,16 +14,24 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.myapplication.Model.CommentModel;
 import com.example.myapplication.Model.TaskModel;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,13 +40,22 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import static java.util.concurrent.TimeUnit.DAYS;
+import static java.util.concurrent.TimeUnit.HOURS;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
-    private EditText titleET,descriptionET,assigneeET,createdOnET;
+    private EditText titleET,descriptionET,assigneeET,createdOnET,commentET;
     private RadioGroup priorityRadioGroup, statusRadioGroup;
     private TaskModel taskModel;
     private Button updateTaskBtn;
+    private TextView commentCountTV;
+    private FloatingActionButton addCommentBtn;
+    private RecyclerView recyclerView;
+    private ArrayList<CommentModel> commentModelArrayList;
+    private CommentAdapter commentAdapter;
     private static final String TAG = "TaskDetailActivity";
     private static final String low = "low";
     private static final String medium = "medium";
@@ -55,9 +76,21 @@ public class TaskDetailActivity extends AppCompatActivity {
         descriptionET = findViewById(R.id.idETTaskDescription);
         assigneeET = findViewById(R.id.idETTaskAssignee);
         createdOnET = findViewById(R.id.idETTaskCreatedOn);
+        commentET = findViewById(R.id.idETComment);
         priorityRadioGroup = findViewById(R.id.idRGTaskPriority);
         statusRadioGroup = findViewById(R.id.idRGTaskStatus);
         updateTaskBtn = findViewById(R.id.idBtnUpdateTask);
+        addCommentBtn = findViewById(R.id.idBtnAddComment);
+        commentCountTV = findViewById(R.id.idTVCommentCount);
+
+        commentModelArrayList = new ArrayList<>();
+        loadComments();
+        commentCountTV.setText("Comments   "+commentModelArrayList.size());
+        recyclerView = findViewById(R.id.idRVComment);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentAdapter = new CommentAdapter(commentModelArrayList);
+        recyclerView.setAdapter(commentAdapter);
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -138,6 +171,41 @@ public class TaskDetailActivity extends AppCompatActivity {
                 updateTask(title,description,priority,assignee,status);
             }
         });
+
+        addCommentBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(commentET.getText().toString().equals("")){
+                    Toast.makeText(TaskDetailActivity.this, "Enter comment!", Toast.LENGTH_SHORT).show();
+                }else{
+                    String comment = commentET.getText().toString();
+                    Date date = new Date();
+                    long currentTimeMilli = date.getTime();
+                    String username="";
+                    try {
+                        username = WorkSpace.user.getString("username");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    //-----------------add to database---------------------
+                    commentModelArrayList.add(new CommentModel(id,comment,currentTimeMilli+"",username));
+                    commentAdapter.notifyDataSetChanged();
+                    recyclerView.scrollToPosition(commentModelArrayList.size()-1);
+                    commentET.setText("");
+                    Toast.makeText(TaskDetailActivity.this, "Comment posted successfully!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private void loadComments() {
+        //-----------------load comments with taskId=id from database---------------------
+        commentModelArrayList.add(new CommentModel(1,"comment 1","1652214856430","adi"));
+        commentModelArrayList.add(new CommentModel(2,"comment 2","1652214856530","rishabh"));
+        commentModelArrayList.add(new CommentModel(3,"comment 3","1652214856630","shubham"));
+        commentModelArrayList.add(new CommentModel(4,"comment 4","1652214856600","shivang"));
+
     }
 
     private void updateTask(String title, String description, String priority, String assignee, String status) {
@@ -191,6 +259,5 @@ public class TaskDetailActivity extends AppCompatActivity {
             Log.i("UpdateTask", e.getMessage());
         }
     }
-
 
 }

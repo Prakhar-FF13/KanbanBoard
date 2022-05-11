@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginTop="5dp"
+    app:cardElevation="50dp"
+    android:background="@drawable/background_round_white">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:id="@+id/idCIVAuthorPic"
+                android:layout_marginHorizontal="10dp"
+                android:layout_gravity="center_vertical"
+                android:textSize="25sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:src="@drawable/userpic"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="10dp">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="20dp"
+                        android:layout_weight="1"
+                        android:id="@+id/idTVCommentAuthor"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_gravity="center"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:text=""/>
+
+                    <TextView
+                        android:id="@+id/idTVCommentTimeDiff"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_marginHorizontal="10dp"
+                        android:layout_marginVertical="5dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text=""
+                        android:gravity="right"
+                        android:textColor="@color/black"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="1"
+                    android:id="@+id/idTVComment"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text=""/>
+
+<!--                <Button-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="20dp"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:id="@+id/idBtnCommentDelete"-->
+<!--                    android:layout_marginHorizontal="10dp"-->
+<!--                    android:layout_marginBottom="10dp"-->
+<!--                    android:background="@drawable/round_bg"-->
+<!--                    android:text="Delete"-->
+<!--                    android:textColor="@color/colorThemeGreen"-->
+<!--                    android:layout_gravity="left"/>-->
+
+                <ImageButton
+                    android:id="@+id/idBtnCommentDelete"
+                    android:layout_width="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:layout_gravity="right"
+                    android:background="@drawable/round_bg"
+                    android:backgroundTint="@color/white"
+                    app:srcCompat="@drawable/ic_baseline_delete_24"
+                    app:tint="@color/colorThemeBlue" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
