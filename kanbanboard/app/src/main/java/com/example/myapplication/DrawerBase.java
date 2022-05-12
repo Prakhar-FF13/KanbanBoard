@@ -67,26 +67,26 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.workspace_menu_items,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.delete_workspace:
-                Log.i("sfdf","hello");
-                break;
-            case R.id.add_collaborators:
-                Log.i("sfdf","hello");
-                break;
-            case R.id.show_collaborators:
-                Log.i("sfdf","hello");
-                break;
-        }
-        return false;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.workspace_menu_items,menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.delete_workspace:
+//                Log.i("sfdf","hello");
+//                break;
+//            case R.id.add_collaborators:
+//                Log.i("sfdf","hello");
+//                break;
+//            case R.id.show_collaborators:
+//                Log.i("sfdf","hello");
+//                break;
+//        }
+//        return false;
+//    }
 
 }

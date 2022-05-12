@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -23,6 +24,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -39,7 +41,10 @@ public class UploadImage extends AppCompatActivity {
     Button upload_button, skip_button;
     boolean upl = false;
     Uri uri = null;
-    JSONObject h;
+    JSONObject jsonObject;
+    Bitmap bitmap = null;
+    InputStream inputStream;
+
     public static HashMap<String ,String > image_Data = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,8 +77,8 @@ public class UploadImage extends AppCompatActivity {
                     Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
                     workspaceintent.putExtra("user", u);
                     try {
-                         h = new JSONObject(getIntent().getStringExtra("user"));
-                        image_Data.put("username", h.get("username").toString());
+                         jsonObject = new JSONObject(getIntent().getStringExtra("user"));
+                        image_Data.put("username", jsonObject.get("username").toString());
                     } catch (JSONException e) {
                         e.printStackTrace();
                         Log.i("Workspace", "Error in converting user object from intent.extra");
@@ -109,6 +114,12 @@ public class UploadImage extends AppCompatActivity {
         if(resultCode==RESULT_OK){
             uri = data.getData();
             imageView.setImageURI(uri);
+            try {
+                inputStream = getContentResolver().openInputStream(uri);
+                bitmap = BitmapFactory.decodeStream(inputStream);
+            }catch (FileNotFoundException e){
+                Log.e("hello",e.getMessage().toString());
+            }
         }
     }
 
