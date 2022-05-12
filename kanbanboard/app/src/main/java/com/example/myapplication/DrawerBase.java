@@ -46,7 +46,7 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
             case  R.id.nav_home:
                 Intent intent = new Intent(getApplicationContext(),WorkSpace.class);
                 intent.putExtra("user", WorkSpace.user.toString());
-                startActivity(new Intent(this, WorkSpace.class));
+                startActivity(intent);
                 overridePendingTransition(0,0);
                 break;
             case  R.id.nav_img:

@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:autoLink="phone"
-        android:text="+919910833771"
+        android:text="1800113435"
         android:textSize="20sp"
         android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:autoLink="email"
-        android:text="shivang21084@gmail.com"
+        android:text="help@kanbanboard.com"
         android:textSize="20sp"
         android:textStyle="bold" />
 </LinearLayout>
