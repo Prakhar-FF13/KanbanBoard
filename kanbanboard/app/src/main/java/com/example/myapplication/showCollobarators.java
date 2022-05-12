@@ -32,13 +32,13 @@ public class showCollobarators extends AppCompatActivity {
 
     @Override
     protected void onStart() {
-//        wHandler.post(new Runnable() {
-//            @Override
-//            public void run() {
-//                fetchData();
-//                collobaratorsAdapter.notifyDataSetChanged();
-//            }
-//        });
+        wHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                fetchData();
+                collobaratorsAdapter.notifyDataSetChanged();
+            }
+        });
         super.onStart();
     }
 
@@ -51,7 +51,7 @@ public class showCollobarators extends AppCompatActivity {
         RecyclerView collabspacerecyvlerview = findViewById(R.id.collab_view);
         collobaratorsAdapter = new showCollobaratorsAdapter(collablist);
         collabspacerecyvlerview.setAdapter(collobaratorsAdapter);
-        fetchData();
+//        fetchData();
 
 
 

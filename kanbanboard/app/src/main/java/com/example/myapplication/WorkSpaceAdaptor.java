@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -10,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 
@@ -62,9 +66,19 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
                                 context.startActivity(intent);
                                 return true;
                             case R.id.delete_workspace:
-                                workspaceList.remove(position);
-//                                delete workspace from db
-                                notifyDataSetChanged();
+//                                Log.d("createdby", WorkSpace.user.toString());
+                                try {
+                                    if(workspace.getCreatedBy().equals(WorkSpace.user.get("username"))){
+                                        workspaceList.remove(position);
+    //                                delete workspace from db
+                                        notifyDataSetChanged();
+                                    }else {
+                                        Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
                                 return true;
                             case R.id.show_collaborators:
                                 Intent intent1 = new Intent(context, showCollobarators.class);

@@ -3,8 +3,6 @@ package com.example.myapplication;
 import static android.content.ContentValues.TAG;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -67,7 +65,14 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                 @Override
                 public void onClick(View view) {
                     if(muser.equals(collab.getDesignation())){
-                        deletecollab(collab.getWid(), collab.getCollabname());
+                        if(!muser.equals(collab.getCollabname())){
+                            collablist.remove(position);
+                            deletecollab(collab.getWid(), collab.getCollabname());
+                            notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(context, "Leader can not removed, Delete project instead", Toast.LENGTH_SHORT).show();
+                        }
+
                     }else{
                         Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
                     }
@@ -116,13 +121,9 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                     try {
                         JSONObject x = new JSONObject(res);
                         Log.i(TAG, "Task Updated Successfully!");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                notifyDataSetChanged();
-                                Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        notifyDataSetChanged();
+                        Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
+
                     } catch (Exception e) {
                         Log.i("UpdateTask", "Error in onResponse of update task");
                         Log.i("UpdateTask", e.getMessage());
