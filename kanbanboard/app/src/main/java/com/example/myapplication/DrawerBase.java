@@ -1,6 +1,7 @@
 package com.example.myapplication;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -15,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
 
@@ -22,6 +24,7 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
 
     DrawerLayout drawerLayout;
     String s=null;
+
     @Override
     public void setContentView(View view) {
         drawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_drawer_base, null);
@@ -33,6 +36,9 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
         setSupportActionBar(toolbar);
 
         NavigationView navigationView = drawerLayout.findViewById(R.id.nav_view);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navUsername =  headerView.findViewById(R.id.nav_username);
+        navUsername.setText(WorkSpace.un);
         navigationView.setNavigationItemSelectedListener(this);
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.menu_drawer_open, R.string.menu_drawer_close);
@@ -47,7 +53,6 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
         switch (item.getItemId()) {
             case  R.id.nav_home:
                 if(s.equals("WorkSpace")==false){
-                    System.out.println("ssssssssssss"+s);
                     Intent intent = new Intent(getApplicationContext(),WorkSpace.class);
                     intent.putExtra("user", WorkSpace.user.toString());
                     startActivity(intent);
