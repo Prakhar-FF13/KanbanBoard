@@ -81,6 +81,36 @@ def login():
         return json.dumps({"code": 400, "message": "Login Failed"})
 
 
+@app.route('/fetchuser', methods=['POST'])
+def fetchuser():
+    if request.method == 'POST':
+        x = json.loads(request.data)
+        print(x)
+        username = x['username']
+        conn = getSqliteConnection()
+        data = conn.execute(
+            'SELECT * FROM users WHERE username=(?)',
+            (username, )).fetchall()
+        conn.commit()
+        conn.close()
+
+        if (len(data) == 0):
+            return json.dumps({"code": 400, "message": "User not found"})
+
+        data = data[0]
+
+        return json.dumps({
+            "code": 200,
+            "message": "Logged In",
+            "username": data['username'],
+            "password": data['password'],
+            "phone": data['phone'],
+            "email": data['email'],
+        })
+    else:
+        return json.dumps({"code": 400, "message": "Login Failed"})
+
+
 @app.route('/forgot', methods=['POST'])
 def forgot():
     if request.method == 'POST':
