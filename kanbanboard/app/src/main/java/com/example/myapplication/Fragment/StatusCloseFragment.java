@@ -116,7 +116,8 @@ public class StatusCloseFragment extends Fragment implements RecyclerViewAdapter
                                     obj.getString("description"),
                                     obj.getString("priority"),
                                     obj.getString("assignee"),
-                                    obj.getString("status")
+                                    obj.getString("status"),
+                                    obj.getString("date")
                             ));
                         }
                         new Handler(Looper.getMainLooper()).post(new Runnable() {

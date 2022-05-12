@@ -494,4 +494,4 @@ def deletecomment():
 
 
 if __name__ == '__main__':
-    app.run(host="192.168.59.84", port=8000, debug=True)
+    app.run(host="192.168.114.153", port=8000, debug=True)

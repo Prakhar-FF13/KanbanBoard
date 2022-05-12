@@ -9,14 +9,16 @@ public class TaskModel implements Serializable {
     private String priority;
     private String assignee;
     private String status;
+    private String date;
 
-    public TaskModel(int id, String title, String description, String priority, String assignee, String status) {
+    public TaskModel(int id, String title, String description, String priority, String assignee, String status, String date) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.priority = priority;
         this.assignee = assignee;
         this.status = status;
+        this.date = date;
     }
 
     public String getTitle() {
@@ -60,4 +62,12 @@ public class TaskModel implements Serializable {
     }
 
     public int getId() { return this.id; }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
 }

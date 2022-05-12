@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -16,6 +17,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -98,6 +100,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
         radioGroupRG = view1.findViewById(R.id.idRGDialog);
 
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(DialogInterface dialog, int id) {
                 if(titleET.getText().toString().isEmpty() || descriptionET.getText().toString().isEmpty() ||
@@ -119,7 +122,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                         case R.id.idRBDialogHigh:
                             priority = high;
                     }
-                    createTask(title,description,priority,assignee,open);
+                    createTask(title,description,priority,assignee,open,java.time.LocalDate.now()+"");
                     recyclerViewAdapter.notifyDataSetChanged();
                     recyclerView.scrollToPosition(openTaskModelArrayList.size()-1);
                 }
@@ -188,7 +191,8 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                                     obj.getString("description"),
                                     obj.getString("priority"),
                                     obj.getString("assignee"),
-                                    obj.getString("status")
+                                    obj.getString("status"),
+                                    obj.getString("date")
                             ));
                         }
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
@@ -209,7 +213,8 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
         }
     }
 
-    private void createTask(String title, String description, String priority, String assignee, String status) {
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void createTask(String title, String description, String priority, String assignee, String status,String date) {
         try {
             JSONObject x = new JSONObject();
             x.put("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
@@ -218,6 +223,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
             x.put("priority", priority);
             x.put("assignee", assignee);
             x.put("status", status);
+            x.put("date",date);
             // client to send request.
             OkHttpClient client = new OkHttpClient();
             // media type to json, to inform the data is in json format
@@ -242,7 +248,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                         Bundle b = new Bundle();
                         b.putInt("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
                         if (status.equals(open)) {
-                            openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status));
+                            openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status, date));
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {

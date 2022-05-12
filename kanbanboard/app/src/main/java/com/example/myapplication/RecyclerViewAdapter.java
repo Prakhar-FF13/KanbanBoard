@@ -49,6 +49,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.cardTitleTV.setText(taskModelArrayList.get(position).getTitle());
         holder.cardAssigneeTV.setText("@"+taskModelArrayList.get(position).getAssignee());
+        holder.cardCreatedDateTV.setText(taskModelArrayList.get(position).getDate());
         String priority = taskModelArrayList.get(position).getPriority();
         holder.cardPriorityTV.setText(priority);
         switch (priority){
@@ -137,12 +138,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
 
-        private TextView cardTitleTV,cardAssigneeTV,cardPriorityTV;
+        private TextView cardTitleTV,cardAssigneeTV,cardPriorityTV,cardCreatedDateTV;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             cardTitleTV = itemView.findViewById(R.id.idTVCardTitle);
             cardAssigneeTV = itemView.findViewById(R.id.idTVCardAssignee);
             cardPriorityTV = itemView.findViewById(R.id.idTVCardPriority);
+            cardCreatedDateTV = itemView.findViewById(R.id.idTVCardCreatedOn);
         }
 
         @Override

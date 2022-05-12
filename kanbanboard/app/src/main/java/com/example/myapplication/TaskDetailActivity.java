@@ -196,6 +196,7 @@ public class TaskDetailActivity extends AppCompatActivity {
                     }
 
                     postComment(id,currentTimeMilli,username,comment);
+//                    sendNotification();
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
@@ -377,6 +378,7 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private void sendNotification() {
         //send notification to current assignee of task
+        Log.i("test","check");
         final String senderEmail = "02dixitaditya@gmail.com";
         final String senderPassword = "drfaztvzgkjgbpdw";
         messageToSend = username+" commented on the task assigned to you. Please have a look!";
@@ -404,6 +406,7 @@ public class TaskDetailActivity extends AppCompatActivity {
             message.setSubject(subject);
             message.setText(messageToSend);
             Transport.send(message);
+            Log.i("test","check2");
         }catch (MessagingException e){
             throw new RuntimeException(e);
         }
