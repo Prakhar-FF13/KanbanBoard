@@ -118,7 +118,7 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        Log.i(TAG, "Task Updated Successfully!");
+                        Log.i("RemoveCollaborators", "Task Updated Successfully!");
                         notifyDataSetChanged();
                         Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
 

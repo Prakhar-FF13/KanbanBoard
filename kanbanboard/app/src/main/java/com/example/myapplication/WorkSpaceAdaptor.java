@@ -77,10 +77,14 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
                                 context.startActivity(intent);
                                 return true;
                             case R.id.delete_workspace:
-
+                                JSONObject x = new JSONObject();
+                                try {
+                                    x.put("wid", workspaceList.get(holder.getAdapterPosition()).getWid());
+                                } catch (Exception e) {
+                                    Log.e("DeleteWorkspace", e.toString());
+                                }
                                 try {
                                     if(workspace.getCreatedBy().equals(WorkSpace.user.get("username"))){
-                                        workspaceList.remove(position);
                                         Log.i("DeleteWorkspace", x.toString());
                                         // client to send request.
                                         OkHttpClient client = new OkHttpClient();
@@ -115,14 +119,9 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
                                     }else {
                                         Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                                JSONObject x = new JSONObject();
-                                try {
-                                    x.put("wid", workspaceList.get(holder.getAdapterPosition()).getWid());
                                 } catch (Exception e) {
-                                    Log.e("DeleteWorkspace", e.toString());
+                                    Log.i("DeleteWorkspace", "Error deleting workspace");
+                                    Log.i("DeleteWorkspace", e.getMessage());
                                 }
                                 return true;
                             case R.id.show_collaborators:
