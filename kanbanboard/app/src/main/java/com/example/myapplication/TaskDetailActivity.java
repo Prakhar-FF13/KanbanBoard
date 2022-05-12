@@ -75,6 +75,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     String username="";
     private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0;
     String messageToSend ="",receiverContactNo="";
+    Handler tHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -197,12 +198,13 @@ public class TaskDetailActivity extends AppCompatActivity {
 
                     postComment(id,currentTimeMilli,username,comment);
 //                    sendNotification();
-                    new Thread(new Runnable() {
+                    Thread t = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             sendNotification();
                         }
                     });
+                    t.start();
                 }
             }
         });
@@ -378,60 +380,91 @@ public class TaskDetailActivity extends AppCompatActivity {
 
     private void sendNotification() {
         //send notification to current assignee of task
-        Log.i("test","check");
         final String senderEmail = "02dixitaditya@gmail.com";
         final String senderPassword = "drfaztvzgkjgbpdw";
         messageToSend = username+" commented on the task assigned to you. Please have a look!";
         String subject = "Kanban Board";
-        //String receiverEmail = findEmailFromAuthor();     //from taskmodel.getAuthor(), find email
-        receiverContactNo = findContactFromAuthor();      //from taskmodel.getAuthor(), find contact
-        String receiverEmail = "dixitadi02@gmail.com";
-        receiverContactNo = "8376920458";
-        Properties properties = new Properties();
-        properties.put("mail.smtp.auth","true");
-        properties.put("mail.smtp.starttls.enable","true");
-        properties.put("mail.smtp.host","smtp.gmail.com");
-        properties.put("mail.smtp.port","587");
-        Session session = Session.getInstance(properties, new javax.mail.Authenticator(){
-
-            @Override
-            protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(senderEmail, senderPassword);
-            }
-        });
-        try{
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(senderEmail));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverEmail));
-            message.setSubject(subject);
-            message.setText(messageToSend);
-            Transport.send(message);
-            Log.i("test","check2");
-        }catch (MessagingException e){
-            throw new RuntimeException(e);
-        }
-
         try {
-            Log.i("Send SMS", "");
-            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
-        }
-        catch (Exception e){
-            e.printStackTrace();
-            String message = e.getMessage();
-            Log.i("in sms", message);
-        }
-    }
+            JSONObject x = new JSONObject();
+            x.put("username", taskModel.getAssignee());
 
-    private String findEmailFromAuthor() {
-        String email = "";
-        //find email of taskmodel.getAuthor()
-        return email;
-    }
 
-    private String findContactFromAuthor() {
-        String contact = "";
-        //find contact of taskmodel.getAuthor()
-        return contact;
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            // create request.
+            Request rq = new Request.Builder().url(ServerURL.fetchUser).post(data).build();
+
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("SendNotification", "Failed to send notification.");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject x = new JSONObject(res);
+                        tHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                String receiverEmail = "dixitadi02@gmail.com";
+                                receiverContactNo = "8318097168";
+                                try {
+                                    receiverEmail = x.getString("email");
+                                    receiverContactNo = x.getString("phone");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                    Log.i("SendNotification", "Error parsing data of user.");
+                                }
+                                Properties properties = new Properties();
+                                properties.put("mail.smtp.auth","true");
+                                properties.put("mail.smtp.starttls.enable","true");
+                                properties.put("mail.smtp.host","smtp.gmail.com");
+                                properties.put("mail.smtp.port","587");
+
+                                Session session = Session.getInstance(properties, new javax.mail.Authenticator(){
+                                    @Override
+                                    protected PasswordAuthentication getPasswordAuthentication() {
+                                        return new PasswordAuthentication(senderEmail, senderPassword);
+                                    }
+                                });
+
+                                try{
+                                    Message message = new MimeMessage(session);
+                                    message.setFrom(new InternetAddress(senderEmail));
+                                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverEmail));
+                                    message.setSubject(subject);
+                                    message.setText(messageToSend);
+                                    Transport.send(message);
+                                }catch (MessagingException e){
+                                    throw new RuntimeException(e);
+                                }
+
+                                try {
+                                    ActivityCompat.requestPermissions(TaskDetailActivity.this,new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+                                }
+                                catch (Exception e){
+                                    e.printStackTrace();
+                                    String message = e.getMessage();
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("SendNotification", "Error in onResponse of send notification");
+                        Log.i("SendNotification", e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.i("SendNotification", "Error in sending Notification");
+            Log.i("SendNotification", e.getMessage());
+        }
+
+
     }
     
     @Override
