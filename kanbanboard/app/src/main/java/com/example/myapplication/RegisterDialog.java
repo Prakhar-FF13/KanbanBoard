@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -28,6 +29,10 @@ import okhttp3.Response;
 public class RegisterDialog extends AppCompatDialogFragment {
     private EditText editTextUsername;
     private EditText editTextPassword;
+    private EditText editTextPhNumber;
+    private EditText editTextEmail;
+    public HashMap<String ,String > credentialHmp = new HashMap<>();
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -48,6 +53,8 @@ public class RegisterDialog extends AppCompatDialogFragment {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         String username = editTextUsername.getText().toString();
                         String password = editTextPassword.getText().toString();
+                        String email = editTextEmail.getText().toString();
+                        String phNum = editTextPhNumber.getText().toString();
 
                         if(username == null || username.isEmpty())
                         {
@@ -57,11 +64,23 @@ public class RegisterDialog extends AppCompatDialogFragment {
                         {
                             Toast.makeText(getContext(), "Password field can't be empty", Toast.LENGTH_SHORT).show();
                         }
+                        else if (email == null || email.isEmpty())
+                        {
+                            Toast.makeText(getContext(), "Email field can't be empty", Toast.LENGTH_SHORT).show();
+                        }
+                        else if (phNum == null || phNum.isEmpty())
+                        {
+                            Toast.makeText(getContext(), "Phone Number field can't be empty", Toast.LENGTH_SHORT).show();
+                        }
                         else {
-                            LoginActivity.credential.put("username", username);
-                            LoginActivity.credential.put("password", password);
+                            //(new Changes by Shubham)Add this new hashmap to update db
+                            credentialHmp.put("username", username);
+                            credentialHmp.put("password", password);
+                            credentialHmp.put("email", email);
+                            credentialHmp.put("phoneNum", phNum);
+
                             // create json object to pass as body of request. (from hashmap/map)
-                            JSONObject creds = new JSONObject(LoginActivity.credential);
+                            JSONObject creds = new JSONObject(credentialHmp);
                             // client to send request.
                             OkHttpClient client = new OkHttpClient();
                             // media type to json, to inform the data is in json format
@@ -86,6 +105,8 @@ public class RegisterDialog extends AppCompatDialogFragment {
 
         editTextUsername = view.findViewById(R.id.edit_registeredusername);
         editTextPassword = view.findViewById(R.id.edit_registeredpassword);
+        editTextPhNumber = view.findViewById(R.id.editPhoneNumber);
+        editTextEmail = view.findViewById(R.id.editEmail);
 
         return builder.create();
     }

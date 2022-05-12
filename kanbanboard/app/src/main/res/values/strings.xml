@@ -28,4 +28,6 @@
     <string name="collection_of_different_workspaces">collection of different workspaces</string>
     <string name="enter_the_name_of_new_workspace">Add new workspace</string>
     <string name="enter_the_name_workspace">Enter workspace name</string>
+    <string name="enter_phonenumber">Enter Your Phone Number</string>
+    <string name="enter_email">Enter Your Email</string>
 </resources>
