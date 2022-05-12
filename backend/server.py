@@ -371,26 +371,45 @@ def addcollaborators():
         leader = x['leader']
         username_collaborators = x['username_collaborators']
         conn = getSqliteConnection()
-        conn.execute(
-            "INSERT INTO workspacecollaborators(wid,leader,username_collaborators) VALUES(?,?,?)", (wid, leader, username_collaborators))
-        data = conn.execute(
-            "SELECT * FROM WORKSPACES WHERE wid=(?)", (wid, )).fetchall()
-        prev = data[0]['members']
-        conn.execute(
-            "UPDATE WORKSPACES set members=(?) where wid =(?)", (prev+1, wid))
-        conn.commit()
-        conn.close()
+        getusers = conn.execute("SELECT * from users").fetchall()
+        isExist = False
+        for user in getusers:
+            if user['username'] == username_collaborators:
+                isExist = True
+                break
+        if isExist == True:
+            getcollabuser = conn.execute(
+                "SELECT * from workspacecollaborators WHERE wid=(?)", (wid, )).fetchall()
+            iscollabExist = False
+            for collabuser in getcollabuser:
+                if collabuser['username_collaborators'] == username_collaborators:
+                    iscollabExist = True
+                    break
+            if iscollabExist == True:
+                return json.dumps({"code": 400, "message": "User already exist"})
+            else:
+                conn.execute(
+                    "INSERT INTO workspacecollaborators(wid,leader,username_collaborators) VALUES(?,?,?)", (wid, leader, username_collaborators))
+                data = conn.execute(
+                    "SELECT * FROM WORKSPACES WHERE wid=(?)", (wid, )).fetchall()
+                prev = data[0]['members']
+                conn.execute(
+                    "UPDATE WORKSPACES set members=(?) where wid =(?)", (prev+1, wid))
+                conn.commit()
+                conn.close()
 
-        return json.dumps({
-            "code": 200,
-            "message": "Collaborators added",
-            "wid": x["wid"],
-            "leader": x["leader"],
-            "username_collaborators": x["username_collaborators"],
+                return json.dumps({
+                    "code": 200,
+                    "message": "Collaborators added",
+                    "wid": x["wid"],
+                    "leader": x["leader"],
+                    "username_collaborators": x["username_collaborators"],
 
-        })
+                })
+        else:
+            return json.dumps({"code": 400, "message": "User do not exist"})
     else:
-        return json.dumps({"code": 400, "message": "Failed to create workspace"})
+        return json.dumps({"code": 400, "message": "Failed to add collobarators"})
 
 
 @app.route('/showcollaborators', methods=['POST'])
@@ -521,6 +540,20 @@ def deletecomment():
         return json.dumps({"code": 200, "message": "Comment deleted successfully"})
     else:
         return json.dumps({"code": 400, "message": "Failed to delete comment"})
+
+
+@app.route('/getUsers', methods=['POST'])
+def getUsers():
+    if request.method == 'POST':
+        conn = getSqliteConnection()
+        users = conn.execute("SELECT * FROM users").fetchall()
+        returnusers = []
+        for user in users:
+            returnusers.append({"username": user["username"]})
+        print(returnusers)
+        return json.dumps({"code": 200, "message": "Users Fetched successfully", "returnusers": returnusers})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to fetched users"})
 
 
 if __name__ == '__main__':
