@@ -1,8 +1,6 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,9 +63,14 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                 @Override
                 public void onClick(View view) {
                     if(muser.equals(collab.getDesignation())){
-                        deletecollab(collab.getWid(), collab.getCollabname());
-                        collablist.remove(holder.getAdapterPosition());
-                        notifyDataSetChanged();
+                        if(!muser.equals(collab.getCollabname())){
+                            collablist.remove(position);
+                            deletecollab(collab.getWid(), collab.getCollabname());
+                            notifyDataSetChanged();
+                        }else{
+                            Toast.makeText(context, "Leader can not removed, Delete project instead", Toast.LENGTH_SHORT).show();
+                        }
+
                     }else{
                         Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
                     }
@@ -115,12 +118,10 @@ public class showCollobaratorsAdapter extends RecyclerView.Adapter<showCollobara
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        Log.i(TAG, "Task Updated Successfully!");
+                        notifyDataSetChanged();
+                        Toast.makeText(context, "Member deleted Successfully!", Toast.LENGTH_SHORT).show();
+
                     } catch (Exception e) {
                         Log.i("RemoveCollaborator", "Error in onResponse of remove collaborator");
                         Log.i("RemoveCollaborator", e.getMessage());

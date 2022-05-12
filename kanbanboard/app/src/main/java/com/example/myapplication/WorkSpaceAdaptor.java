@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import okhttp3.Call;
@@ -74,44 +77,53 @@ public class WorkSpaceAdaptor extends RecyclerView.Adapter<WorkSpaceAdaptor.View
                                 context.startActivity(intent);
                                 return true;
                             case R.id.delete_workspace:
+
+                                try {
+                                    if(workspace.getCreatedBy().equals(WorkSpace.user.get("username"))){
+                                        workspaceList.remove(position);
+                                        Log.i("DeleteWorkspace", x.toString());
+                                        // client to send request.
+                                        OkHttpClient client = new OkHttpClient();
+                                        // media type to json, to inform the data is in json format
+                                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+                                        // request body.
+                                        RequestBody data = RequestBody.create(x.toString(), JSON);
+                                        // create request.
+                                        Request rq = new Request.Builder().url(ServerURL.deleteWorkspace).post(data).build();
+
+                                        client.newCall(rq).enqueue(new Callback() {
+                                            @Override
+                                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                                                Log.i("DeleteWorkspace", "Failed to delete workspace.");
+
+                                            }
+
+                                            @Override
+                                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                                                String res = response.body().string();
+                                                try {
+                                                    JSONObject x = new JSONObject(res);
+                                                } catch (Exception e) {
+                                                    Log.i("DeleteWorkspace", "Error in onResponse of delete workspace");
+                                                    Log.i("DeleteWorkspace", e.getMessage());
+                                                }
+                                            }
+                                        });
+
+                                        workspaceList.remove(holder.getAdapterPosition());
+                                        notifyDataSetChanged();
+                                    }else {
+                                        Toast.makeText(context, "You are not Leader", Toast.LENGTH_SHORT).show();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                                 JSONObject x = new JSONObject();
                                 try {
                                     x.put("wid", workspaceList.get(holder.getAdapterPosition()).getWid());
                                 } catch (Exception e) {
                                     Log.e("DeleteWorkspace", e.toString());
                                 }
-
-                                Log.i("DeleteWorkspace", x.toString());
-                                // client to send request.
-                                OkHttpClient client = new OkHttpClient();
-                                // media type to json, to inform the data is in json format
-                                MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                                // request body.
-                                RequestBody data = RequestBody.create(x.toString(), JSON);
-                                // create request.
-                                Request rq = new Request.Builder().url(ServerURL.deleteWorkspace).post(data).build();
-
-                                client.newCall(rq).enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                        Log.i("DeleteWorkspace", "Failed to delete workspace.");
-
-                                    }
-
-                                    @Override
-                                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                        String res = response.body().string();
-                                        try {
-                                            JSONObject x = new JSONObject(res);
-                                        } catch (Exception e) {
-                                            Log.i("DeleteWorkspace", "Error in onResponse of delete workspace");
-                                            Log.i("DeleteWorkspace", e.getMessage());
-                                        }
-                                    }
-                                });
-
-                                workspaceList.remove(holder.getAdapterPosition());
-                                notifyDataSetChanged();
                                 return true;
                             case R.id.show_collaborators:
                                 Intent intent1 = new Intent(context, showCollobarators.class);
