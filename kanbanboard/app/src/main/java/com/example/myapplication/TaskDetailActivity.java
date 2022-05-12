@@ -196,7 +196,12 @@ public class TaskDetailActivity extends AppCompatActivity {
                     }
 
                     postComment(id,currentTimeMilli,username,comment);
-                    sendNotification();
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            sendNotification();
+                        }
+                    });
                 }
             }
         });
