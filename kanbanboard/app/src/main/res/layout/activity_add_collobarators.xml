@@ -29,14 +29,26 @@
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <EditText
+<!--    <EditText-->
+<!--        android:id="@+id/collaborator_username"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_gravity="center"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginRight="10dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:hint="Enter username of collaborators"/>-->
+    <AutoCompleteTextView
         android:id="@+id/collaborator_username"
         android:layout_marginTop="20dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter username of collaborators"/>
+        android:hint="Enter username of collaborators"
+
+        android:ems="10" />
 
     <Button
         android:id="@+id/add_collaborators"
