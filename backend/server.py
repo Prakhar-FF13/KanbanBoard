@@ -38,9 +38,11 @@ def register():
         print(x)
         username = x['username']
         password = x['password']
+        phone = x['phoneNum']
+        email = x['email']
         conn = getSqliteConnection()
-        conn.execute('INSERT INTO users(username, password) VALUES (?,?)',
-                     (username, password))
+        conn.execute('INSERT INTO users(username, password, phone, email) VALUES (?,?,?,?)',
+                     (username, password, phone, email))
         conn.commit()
         conn.close()
         return json.dumps({"code": 200, "message": "registration successfull"})
@@ -67,7 +69,14 @@ def login():
 
         data = data[0]
 
-        return json.dumps({"code": 200, "message": "Logged In", "username": data['username'], "password": data['password']})
+        return json.dumps({
+            "code": 200,
+            "message": "Logged In",
+            "username": data['username'],
+            "password": data['password'],
+            "phone": data['phone'],
+            "email": data['email'],
+        })
     else:
         return json.dumps({"code": 400, "message": "Login Failed"})
 
