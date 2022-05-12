@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -72,6 +73,12 @@ public class AddCollobarators extends AppCompatActivity {
                         @Override
                         public void onResponse(Call call, Response response) throws IOException {
                             String res = response.body().string();
+                            try {
+                                JSONObject out = new JSONObject(res);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
                             Log.i("NetworkCall", res);
 //                            mcollaboratorusername.setText("");
                             try {
