@@ -33,6 +33,7 @@ CREATE TABLE workspaceTasks (
   assignee VARCHAR(255) NOT NULL,
   status VARCHAR(255) NOT NULL,
   priority VARCHAR(255) NOT NULL,
+  date VARCHAR(255),
   FOREIGN KEY (wid) REFERENCES workspaces (wid) ON DELETE CASCADE
 );
 

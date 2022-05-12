@@ -243,6 +243,7 @@ def workspacetasks():
                 "priority": d["priority"],
                 "assignee": d["assignee"],
                 "status": d["status"],
+                "date": d["date"],
             })
 
         print(workspaceTasks)
@@ -266,11 +267,12 @@ def createworkspacetask():
         priority = x["priority"]
         assignee = x["assignee"]
         status = x["status"]
+        date = x["date"]
         conn = getSqliteConnection()
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO WORKSPACETASKS(wid, title, description, assignee, status, priority) VALUES(?,?,?,?,?,?)',
-            (wid, title, description, assignee, status, priority))
+            'INSERT INTO WORKSPACETASKS(wid, title, description, assignee, status, priority, date) VALUES(?,?,?,?,?,?,?)',
+            (wid, title, description, assignee, status, priority, date))
         id = cursor.lastrowid
         conn.commit()
         conn.close()
@@ -404,6 +406,7 @@ def removecollab():
     else:
         return json.dumps({"code": 400, "message": "Failed to delete collab  deletion"})
 
+
 @app.route("/")
 def hello():
     return "Hello World!"
@@ -479,6 +482,7 @@ def deletecomment():
         return json.dumps({"code": 200, "message": "Comment deleted successfully"})
     else:
         return json.dumps({"code": 400, "message": "Failed to delete comment"})
+
 
 if __name__ == '__main__':
     app.run(host="192.168.59.84", port=8000, debug=True)
