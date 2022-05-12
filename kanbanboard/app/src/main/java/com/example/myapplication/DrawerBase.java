@@ -16,6 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.navigation.NavigationView;
@@ -60,10 +61,6 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
                     break;
                 }
                     break;
-            case  R.id.nav_img:
-                startActivity(new Intent(this, UploadImage.class));
-                overridePendingTransition(0,0);
-                break;
             case R.id.nav_logout:
                 break;
             case  R.id.nav_help:

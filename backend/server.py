@@ -30,7 +30,6 @@ def getSqliteConnection():
     connection.row_factory = sqlite3.Row
     return connection
 
-
 @app.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':

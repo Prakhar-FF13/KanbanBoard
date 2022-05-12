@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -24,6 +25,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -40,12 +42,10 @@ public class UploadImage extends AppCompatActivity {
     CircleImageView imageView;
     Button upload_button, skip_button;
     boolean upl = false;
-    Uri uri = null;
+    public static Uri uri = null;
     JSONObject jsonObject;
     Bitmap bitmap = null;
-    InputStream inputStream;
 
-    public static HashMap<String ,String > image_Data = new HashMap<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,26 +76,12 @@ public class UploadImage extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "New Profile Picture Applied", Toast.LENGTH_SHORT).show();
                     Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
                     workspaceintent.putExtra("user", u);
-                    try {
-                         jsonObject = new JSONObject(getIntent().getStringExtra("user"));
-                        image_Data.put("username", jsonObject.get("username").toString());
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        Log.i("Workspace", "Error in converting user object from intent.extra");
-                    }
-
-                    image_Data.put("uri", uri.toString());
-                    JSONObject creds = new JSONObject(image_Data);
-                    OkHttpClient client = new OkHttpClient();
-                    MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                    RequestBody data = RequestBody.create(creds.toString(), JSON);
-//                    Request rq = new Request.Builder().url(ServerURL.imgUpld).post(data).build();
+                    workspaceintent.putExtra("image",uri);
                     startActivity(workspaceintent);
                 }
             }
 
         });
-
 
         skip_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,12 +100,6 @@ public class UploadImage extends AppCompatActivity {
         if(resultCode==RESULT_OK){
             uri = data.getData();
             imageView.setImageURI(uri);
-            try {
-                inputStream = getContentResolver().openInputStream(uri);
-                bitmap = BitmapFactory.decodeStream(inputStream);
-            }catch (FileNotFoundException e){
-                Log.e("hello",e.getMessage().toString());
-            }
         }
     }
 

@@ -17,4 +17,5 @@ public class ServerURL {
     public static String addComment = "http://10.0.2.2:5000/addcomment";
     public static String fetchComments = "http://10.0.2.2:5000/fetchcomments";
     public static String deleteComment = "http://10.0.2.2:5000/deletecomment";
+    public static String imgUpld = "http://10.0.2.2:5000/imageupload";
 }
