@@ -1,24 +1,26 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.os.StrictMode;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.Model.CommentModel;
 import com.example.myapplication.Model.TaskModel;
@@ -27,13 +29,19 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Comment;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
+import java.util.Properties;
+
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -42,10 +50,6 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import static java.util.concurrent.TimeUnit.DAYS;
-import static java.util.concurrent.TimeUnit.HOURS;
-import static java.util.concurrent.TimeUnit.MINUTES;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 public class TaskDetailActivity extends AppCompatActivity {
 
@@ -53,7 +57,7 @@ public class TaskDetailActivity extends AppCompatActivity {
     private RadioGroup priorityRadioGroup, statusRadioGroup;
     private TaskModel taskModel;
     private Button updateTaskBtn;
-    private TextView commentCountTV;
+    public static TextView commentCountTV;
     private FloatingActionButton addCommentBtn;
     private RecyclerView recyclerView;
     private ArrayList<CommentModel> commentModelArrayList;
@@ -69,6 +73,8 @@ public class TaskDetailActivity extends AppCompatActivity {
     private int wid;
     private int id;
     String username="";
+    private static final int MY_PERMISSIONS_REQUEST_SEND_SMS =0;
+    String messageToSend ="",receiverContactNo="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,7 +94,6 @@ public class TaskDetailActivity extends AppCompatActivity {
 
         commentModelArrayList = new ArrayList<>();
         loadComments();
-        commentCountTV.setText("Comments   "+commentModelArrayList.size());
         recyclerView = findViewById(R.id.idRVComment);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -190,63 +195,71 @@ public class TaskDetailActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                    //-----------------add to database---------------------
-                    try {
-                        JSONObject x = new JSONObject();
-                        x.put("id", id);
-                        x.put("timestamp", currentTimeMilli+"");
-                        x.put("author", username);
-                        x.put("comment", comment);
-
-                        OkHttpClient client = new OkHttpClient();
-                        // media type to json, to inform the data is in json format
-                        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-                        // request body.
-                        RequestBody data = RequestBody.create(x.toString(), JSON);
-                        // create request.
-                        Request rq = new Request.Builder().url(ServerURL.addComment).post(data).build();
-
-                        client.newCall(rq).enqueue(new Callback() {
-                            @Override
-                            public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                                Log.i("AddCommentOnTask", "Failed to create comment.");
-                            }
-
-                            @Override
-                            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                                String res = response.body().string();
-                                try {
-                                    JSONObject x = new JSONObject(res);
-                                    Log.i(TAG, "Comment Added Successfully!");
-                                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            CommentModel cmt = new CommentModel(id,comment,currentTimeMilli+"",username);
-                                            try {
-                                                cmt.setCid(x.getInt("cid"));
-                                            } catch (Exception e) {
-                                                Log.i("AddCommentOnTask", "Error adding Cid to comments array");
-                                                Log.i("AddCommentOnTask", e.getMessage());
-                                            }
-                                            commentModelArrayList.add(cmt);
-                                            commentAdapter.notifyItemInserted(commentModelArrayList.size() - 1);
-                                            recyclerView.scrollToPosition(commentModelArrayList.size()-1);
-                                            commentET.setText("");
-                                            Toast.makeText(TaskDetailActivity.this, "Comment posted successfully!", Toast.LENGTH_SHORT).show();
-                                        }
-                                    });
-                                } catch (Exception e) {
-                                    Log.i("AddCommentOnTask", "Error in onResponse of add comment");
-                                    Log.i("AddCommentOnTask", e.getMessage());
-                                }
-                            }
-                        });
-                    } catch (Exception e) {
-                        Log.i("AddCommentOnTask", "Error preparing data for adding comment");
-                    }
+                    postComment(id,currentTimeMilli,username,comment);
+                    sendNotification();
                 }
             }
         });
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+    }
+
+    private void postComment(int id, long currentTimeMilli, String username, String comment) {
+        try {
+            JSONObject x = new JSONObject();
+            x.put("id", id);
+            x.put("timestamp", currentTimeMilli+"");
+            x.put("author", username);
+            x.put("comment", comment);
+
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            // create request.
+            Request rq = new Request.Builder().url(ServerURL.addComment).post(data).build();
+
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.i("AddCommentOnTask", "Failed to create comment.");
+                }
+
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject x = new JSONObject(res);
+                        Log.i(TAG, "Comment Added Successfully!");
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                CommentModel cmt = new CommentModel(id,comment,currentTimeMilli+"",username);
+                                try {
+                                    cmt.setCid(x.getInt("cid"));
+                                } catch (Exception e) {
+                                    Log.i("AddCommentOnTask", "Error adding Cid to comments array");
+                                    Log.i("AddCommentOnTask", e.getMessage());
+                                }
+                                commentModelArrayList.add(cmt);
+                                commentAdapter.notifyItemInserted(commentModelArrayList.size() - 1);
+                                recyclerView.scrollToPosition(commentModelArrayList.size()-1);
+                                commentET.setText("");
+                                Toast.makeText(TaskDetailActivity.this, "Comment posted successfully!", Toast.LENGTH_SHORT).show();
+                                commentCountTV.setText("Comments   "+commentModelArrayList.size());
+                            }
+                        });
+                    } catch (Exception e) {
+                        Log.i("AddCommentOnTask", "Error in onResponse of add comment");
+                        Log.i("AddCommentOnTask", e.getMessage());
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.i("AddCommentOnTask", "Error preparing data for adding comment");
+        }
     }
 
     private void loadComments() {
@@ -290,6 +303,7 @@ public class TaskDetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 commentAdapter.notifyDataSetChanged();
+                                commentCountTV.setText("Comments   "+commentModelArrayList.size());
                             }
                         });
                     } catch (Exception e) {
@@ -354,6 +368,85 @@ public class TaskDetailActivity extends AppCompatActivity {
             Log.i("UpdateTask", "Failed Updating task");
             Log.i("UpdateTask", e.getMessage());
         }
+    }
+
+    private void sendNotification() {
+        //send notification to current assignee of task
+        final String senderEmail = "02dixitaditya@gmail.com";
+        final String senderPassword = "drfaztvzgkjgbpdw";
+        messageToSend = username+" commented on the task assigned to you. Please have a look!";
+        String subject = "Kanban Board";
+        //String receiverEmail = findEmailFromAuthor();     //from taskmodel.getAuthor(), find email
+        receiverContactNo = findContactFromAuthor();      //from taskmodel.getAuthor(), find contact
+        String receiverEmail = "dixitadi02@gmail.com";
+        receiverContactNo = "8376920458";
+        Properties properties = new Properties();
+        properties.put("mail.smtp.auth","true");
+        properties.put("mail.smtp.starttls.enable","true");
+        properties.put("mail.smtp.host","smtp.gmail.com");
+        properties.put("mail.smtp.port","587");
+        Session session = Session.getInstance(properties, new javax.mail.Authenticator(){
+
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(senderEmail, senderPassword);
+            }
+        });
+        try{
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(receiverEmail));
+            message.setSubject(subject);
+            message.setText(messageToSend);
+            Transport.send(message);
+        }catch (MessagingException e){
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Log.i("Send SMS", "");
+            ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_REQUEST_SEND_SMS);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            String message = e.getMessage();
+            Log.i("in sms", message);
+        }
+    }
+
+    private String findEmailFromAuthor() {
+        String email = "";
+        //find email of taskmodel.getAuthor()
+        return email;
+    }
+
+    private String findContactFromAuthor() {
+        String contact = "";
+        //find contact of taskmodel.getAuthor()
+        return contact;
+    }
+    
+    @Override
+    public void onRequestPermissionsResult(int requestCode,String permissions[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_SEND_SMS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    SmsManager smsManager = SmsManager.getDefault();
+                    if(receiverContactNo != null){
+                        smsManager.sendTextMessage(receiverContactNo, "KanbanBoard",messageToSend , null, null);
+                    }
+                    Toast.makeText(getApplicationContext(), "SMS notification sent!",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "SMS notification sending failed!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+            }
+        }
+
     }
 
 }

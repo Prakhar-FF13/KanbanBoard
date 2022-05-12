@@ -124,6 +124,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.ViewHold
                                                         @Override
                                                         public void run() {
                                                             notifyItemRemoved(holder.getAdapterPosition());
+                                                            TaskDetailActivity.commentCountTV.setText("Comments   "+commentModelArrayList.size());
                                                         }
                                                     });
                                                 } catch (Exception e) {
