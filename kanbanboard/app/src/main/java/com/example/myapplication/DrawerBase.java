@@ -21,6 +21,7 @@ import com.google.android.material.navigation.NavigationView;
 public class DrawerBase extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     DrawerLayout drawerLayout;
+    String s=null;
     @Override
     public void setContentView(View view) {
         drawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_drawer_base, null);
@@ -42,21 +43,31 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         drawerLayout.closeDrawer(GravityCompat.START);
+        s = this.getClass().getSimpleName();
         switch (item.getItemId()) {
             case  R.id.nav_home:
-                Intent intent = new Intent(getApplicationContext(),WorkSpace.class);
-                intent.putExtra("user", WorkSpace.user.toString());
-                startActivity(intent);
-                overridePendingTransition(0,0);
-                break;
+                if(s.equals("WorkSpace")==false){
+                    System.out.println("ssssssssssss"+s);
+                    Intent intent = new Intent(getApplicationContext(),WorkSpace.class);
+                    intent.putExtra("user", WorkSpace.user.toString());
+                    startActivity(intent);
+                    overridePendingTransition(0,0);
+                    break;
+                }
+                    break;
             case  R.id.nav_img:
                 startActivity(new Intent(this, UploadImage.class));
                 overridePendingTransition(0,0);
                 break;
-            case  R.id.nav_help:
-                startActivity(new Intent(this, HelpUser.class));
-                overridePendingTransition(0,0);
+            case R.id.nav_logout:
                 break;
+            case  R.id.nav_help:
+                if(s.equals("HelpUser")==false){
+                    startActivity(new Intent(this, HelpUser.class));
+                    overridePendingTransition(0,0);
+                    break;
+                }
+                    break;
         }
         return false;
     }
@@ -66,27 +77,5 @@ public class DrawerBase extends AppCompatActivity implements NavigationView.OnNa
             getSupportActionBar().setTitle(titlestr);
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.workspace_menu_items,menu);
-//        return true;
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        switch (item.getItemId()) {
-//            case R.id.delete_workspace:
-//                Log.i("sfdf","hello");
-//                break;
-//            case R.id.add_collaborators:
-//                Log.i("sfdf","hello");
-//                break;
-//            case R.id.show_collaborators:
-//                Log.i("sfdf","hello");
-//                break;
-//        }
-//        return false;
-//    }
 
 }
