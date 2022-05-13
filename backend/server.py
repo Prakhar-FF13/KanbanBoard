@@ -307,15 +307,27 @@ def createworkspacetask():
         status = x["status"]
         date = x["date"]
         conn = getSqliteConnection()
-        cursor = conn.cursor()
-        cursor.execute(
-            'INSERT INTO WORKSPACETASKS(wid, title, description, assignee, status, priority, date) VALUES(?,?,?,?,?,?,?)',
-            (wid, title, description, assignee, status, priority, date))
-        id = cursor.lastrowid
-        conn.commit()
-        conn.close()
+        getcollabuser = conn.execute(
+            "SELECT * from workspacecollaborators WHERE wid=(?)", (wid, )).fetchall()
+        iscollabExist = False
+        for collabuser in getcollabuser:
+            if collabuser['username_collaborators'] == assignee:
+                iscollabExist = True
+                break
+        if iscollabExist == True:
+            cursor = conn.cursor()
+            cursor.execute(
+                'INSERT INTO WORKSPACETASKS(wid, title, description, assignee, status, priority, date) VALUES(?,?,?,?,?,?,?)',
+                (wid, title, description, assignee, status, priority, date))
+            id = cursor.lastrowid
+            conn.commit()
+            conn.close()
 
-        return json.dumps({"code": 200, "message": "Workspace Task Created", "id": id})
+            return json.dumps({"code": 200, "message": "Workspace Task Created", "id": id})
+        else:
+            return json.dumps({"code": 400, "message": "Collobarators do not exist"})
+
+        
     else:
         return json.dumps({"code": 400, "message": "Failed to create workspace task"})
 
@@ -552,6 +564,19 @@ def getUsers():
             returnusers.append({"username": user["username"]})
         print(returnusers)
         return json.dumps({"code": 200, "message": "Users Fetched successfully", "returnusers": returnusers})
+    else:
+        return json.dumps({"code": 400, "message": "Failed to fetched users"})
+
+@app.route('/getcollab', methods=['POST'])
+def getcollab():
+    if request.method == 'POST':
+        conn = getSqliteConnection()
+        users = conn.execute("SELECT * FROM workspacecollaborators").fetchall()
+        returnusers = []
+        for user in users:
+            returnusers.append({"username": user["username_collaborators"]})
+        print(returnusers)
+        return json.dumps({"code": 200, "message": "collab Fetched successfully", "returnusers": returnusers})
     else:
         return json.dumps({"code": 400, "message": "Failed to fetched users"})
 
