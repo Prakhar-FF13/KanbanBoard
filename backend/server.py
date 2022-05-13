@@ -30,7 +30,6 @@ def getSqliteConnection():
     connection.row_factory = sqlite3.Row
     return connection
 
-
 @app.route('/register', methods=['POST'])
 def register():
     if request.method == 'POST':
@@ -342,6 +341,7 @@ def updateworkspacetask():
         return json.dumps({"code": 200, "message": "Workspace Task Updated"})
     else:
         return json.dumps({"code": 400, "message": "Failed to update workspace task"})
+
 
 
 @app.route('/deleteworkspacetask', methods=['POST'])

@@ -8,19 +8,25 @@ import androidx.viewpager.widget.ViewPager;
 import com.example.myapplication.Fragment.StatusCloseFragment;
 import com.example.myapplication.Fragment.StatusInProgressFragment;
 import com.example.myapplication.Fragment.StatusOpenFragment;
+import com.example.myapplication.databinding.ActivityWorkSpaceBinding;
+import com.example.myapplication.databinding.ActivityWorkspaceDetailBinding;
 import com.google.android.material.tabs.TabLayout;
 
-public class WorkspaceDetailActivity extends AppCompatActivity {
+public class WorkspaceDetailActivity extends DrawerBase {
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private PagerAdapter pagerAdapter;
     private int wid;
+    ActivityWorkspaceDetailBinding activityWorkspaceDetailBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_workspace_detail);
+        activityWorkspaceDetailBinding = ActivityWorkspaceDetailBinding.inflate(getLayoutInflater());
+        setContentView(activityWorkspaceDetailBinding.getRoot());
+        allocateActivityTitle("Task");
+        //setContentView(R.layout.activity_workspace_detail);
         wid = getIntent().getIntExtra("wid", -1);
         Bundle b = new Bundle();
         b.putInt("wid", wid);

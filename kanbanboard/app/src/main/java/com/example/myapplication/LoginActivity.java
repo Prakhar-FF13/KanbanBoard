@@ -99,6 +99,9 @@ public class LoginActivity extends AppCompatActivity {
                                     Intent workspaceintent = new Intent(getApplicationContext(), WorkSpace.class);
                                     workspaceintent.putExtra("user", x.toString());
                                     startActivity(workspaceintent);
+//                                    Intent workspaceintent = new Intent(getApplicationContext(), UploadImage.class);
+//                                    workspaceintent.putExtra("user", x.toString());
+//                                    startActivity(workspaceintent);
                                 } else {
                                     lHandler.post(new Runnable() {
                                         @Override
@@ -160,5 +163,12 @@ public class LoginActivity extends AppCompatActivity {
         outState.putString("password",etPassword.getText().toString());
         outState.putSerializable("CREDENTIAL_MAP",credential);
         super.onSaveInstanceState(outState);
+    }
+    public void onBackPressed(){
+        Intent a = new Intent(Intent.ACTION_MAIN);
+        a.addCategory(Intent.CATEGORY_HOME);
+        a.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(a);
+
     }
 }

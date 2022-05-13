@@ -3,6 +3,7 @@ package com.example.myapplication;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -10,12 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.databinding.ActivityWorkSpaceBinding;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,15 +36,17 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class WorkSpace extends AppCompatActivity {
+public class WorkSpace extends DrawerBase {
 
     private final ArrayList<WorkSpaceModel> workSpaceModelArrayList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
     private EditText newWorkspaceName;
     public static JSONObject user;
+    public static String un;
     private WorkSpaceAdaptor adapter;
     private Handler wHandler;
 
+    ActivityWorkSpaceBinding activityWorkSpaceBinding;
     @Override
     protected void onStart() {
         wHandler.post(new Runnable() {
@@ -56,17 +62,27 @@ public class WorkSpace extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_work_space);
-        RecyclerView workspaceRecyclerView = findViewById(R.id.workspace_view);
-        adapter = new WorkSpaceAdaptor(workSpaceModelArrayList);
-        workspaceRecyclerView.setAdapter(adapter);
-        wHandler = new Handler(Looper.getMainLooper());
         try {
             this.user = new JSONObject(getIntent().getStringExtra("user"));
+            un= (String) user.get("username");
         } catch (JSONException e) {
             e.printStackTrace();
             Log.i("Workspace", "Error in converting user object from intent.extra");
         }
+        activityWorkSpaceBinding = ActivityWorkSpaceBinding.inflate(getLayoutInflater());
+        setContentView(activityWorkSpaceBinding.getRoot());
+        allocateActivityTitle("WorkSpace");
+        //setContentView(R.layout.activity_work_space);
+        RecyclerView workspaceRecyclerView = findViewById(R.id.workspace_view);
+        adapter = new WorkSpaceAdaptor(workSpaceModelArrayList);
+        workspaceRecyclerView.setAdapter(adapter);
+        wHandler = new Handler(Looper.getMainLooper());
+//        try {
+//            this.user = new JSONObject(getIntent().getStringExtra("user"));
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//            Log.i("Workspace", "Error in converting user object from intent.extra");
+//        }
 //        fetchData();
         floatingActionButton = findViewById(R.id.floatingActionButton);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
