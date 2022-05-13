@@ -7,7 +7,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/tvaddnewworkspace"
+        android:id="@+id/tvAddCollaborators"
         android:layout_gravity="center_vertical"
         android:layout_margin="10dp"
         android:text="@string/enter_the_name_of_new_workspace"
@@ -16,7 +16,7 @@
         android:textStyle="bold"/>
 
     <EditText
-        android:id="@+id/newWorkspaceName"
+        android:id="@+id/newCollaboratorName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
@@ -25,8 +25,9 @@
         android:hint="@string/enter_the_name_workspace"
         android:importantForAutofill="no"
         android:inputType="textPersonName"
+        android:minHeight="48dp"
         android:padding="10dp"
         android:textColorHint="@color/colorThemeGreen"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
 </LinearLayout>

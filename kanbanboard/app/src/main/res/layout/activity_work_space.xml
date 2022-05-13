@@ -4,20 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WorkSpace"
-    android:background="#e5fbe5">
+    android:background="#CDF897B8"
+    tools:context=".WorkSpace">
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:background="@color/colorThemeBlue"
+        android:padding="10dp"
         android:text="WorkSpaces"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:background="@color/colorThemeBlue"/>
+        android:textStyle="bold" />
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -31,19 +31,19 @@
     </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/floatingActionButton"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_gravity="end|bottom"
         android:layout_margin="16dp"
         android:clickable="true"
         android:contentDescription="@string/collection_of_different_workspaces"
-        android:focusable="true"
         android:elevation="50dp"
-        app:borderWidth="0dp"
+        android:focusable="true"
         app:backgroundTint="@color/colorThemeBlue"
-        app:srcCompat="@drawable/ic_baseline_add_24"/>
+        app:borderWidth="0dp"
+        app:srcCompat="@drawable/ic_baseline_add_24" />
 
 </RelativeLayout>

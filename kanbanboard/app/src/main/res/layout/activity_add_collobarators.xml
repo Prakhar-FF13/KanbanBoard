@@ -7,29 +7,23 @@
     android:orientation="vertical"
     tools:context=".AddCollobarators">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
+        android:text="@string/add_collaborators_to_the_project"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="Add Collaborators to the Project : "/>
+    <TextView
+        android:id="@+id/projectname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/projectname"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-<!--    <EditText-->
+    <!--    <EditText-->
 <!--        android:id="@+id/collaborator_username"-->
 <!--        android:layout_marginTop="20dp"-->
 <!--        android:layout_gravity="center"-->
@@ -40,23 +34,32 @@
 <!--        android:hint="Enter username of collaborators"/>-->
     <AutoCompleteTextView
         android:id="@+id/collaborator_username"
-        android:layout_marginTop="20dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Enter username of collaborators"
+        android:layout_gravity="center"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:ems="10"
 
-        android:ems="10" />
+        android:hint="@string/enter_username_of_collaborators"
+        android:textColor="@color/black"
+        android:textColorHint="#78909C"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/add_collaborators"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_margin="10dp"
-        android:text="ADD"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/round_bg"
+        android:text="@string/btn_add_collaborator"
+        android:textColor="@color/white"
+        android:textSize="20sp" />
 
 
 

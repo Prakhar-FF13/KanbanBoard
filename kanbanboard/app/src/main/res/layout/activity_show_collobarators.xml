@@ -8,16 +8,44 @@
 
     <TextView
 
+        android:id="@+id/tvColloabHead"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:text="Collaborators"
+        android:background="@color/colorThemeBlue"
+        android:padding="10dp"
+        android:text="@string/textview_collaborators"
         android:textColor="@color/white"
         android:textSize="20sp"
-        android:textStyle="bold"
-        android:padding="10dp"
-        android:background="@color/colorThemeBlue"/>
+        android:textStyle="bold" />
 
+
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvColloabHead"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="21dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:text="@string/collab_name"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvDesignation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvColloabHead"
+        android:layout_alignStart="@id/tvName"
+        android:layout_marginStart="106dp"
+        android:layout_marginTop="24dp"
+        android:text="@string/collab_designation"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/collab_view"

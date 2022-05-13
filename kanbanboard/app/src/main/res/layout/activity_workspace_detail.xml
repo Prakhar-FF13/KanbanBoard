@@ -8,14 +8,14 @@
     tools:context=".WorkspaceDetailActivity">
 
     <com.google.android.material.tabs.TabLayout
+        android:id="@+id/idTabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/idTabLayout"
         android:background="@color/colorThemeBlue"
+        android:elevation="5dp"
         app:tabIndicatorColor="@color/colorThemeGreen"
         app:tabSelectedTextColor="@color/white"
-        app:tabTextColor="@color/colorThemeGrey"
-        android:elevation="5dp">
+        app:tabTextColor="@color/white">
 
     </com.google.android.material.tabs.TabLayout>
     <androidx.viewpager.widget.ViewPager

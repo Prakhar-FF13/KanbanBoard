@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,14 +9,16 @@
     android:layout_marginTop="10dp"
     app:cardElevation="50dp"
     android:background="@drawable/background_round_white">
+
     <ImageButton
         android:id="@+id/workspace_menus"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="end"
         android:background="@drawable/background_round_white"
+        android:contentDescription="@string/side_bar_menu"
         android:src="@drawable/ic_baseline_more_vert_24"
-         />
+        tools:ignore="TouchTargetSizeCheck" />
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,22 +43,25 @@
             android:id="@+id/projectleader"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:text="Leader"/>
+            android:layout_marginStart="10dp"
+            android:text="@string/project_leader"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
         <TextView
+            android:id="@+id/workspace_member_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/workspace_member_count"
+            android:layout_gravity="center_vertical"
             android:layout_marginHorizontal="10dp"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
-            android:layout_gravity="center_vertical"
+            android:drawablePadding="5dp"
             android:text=""
+            android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:drawableStart="@drawable/ic_baseline_people_outline_24"
-            android:drawablePadding="5dp"/>
+            app:drawableStartCompat="@drawable/ic_baseline_people_outline_24" />
 
     </LinearLayout>
 

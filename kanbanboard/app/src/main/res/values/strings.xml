@@ -30,4 +30,16 @@
     <string name="enter_the_name_workspace">Enter workspace name</string>
     <string name="enter_phonenumber">Enter Your Phone Number</string>
     <string name="enter_email">Enter Your Email</string>
+    <string name="add_collaborators">Add Collaborators</string>
+    <string name="add_collaborator_name">Enter name of collaborator</string>
+    <string name="dialog_project_name">Project Name :</string>
+    <string name="btn_add_collaborator">ADD COLLABORATOR</string>
+    <string name="add_collaborators_to_the_project">Add Collaborators to the Project :</string>
+    <string name="enter_username_of_collaborators">Enter username of collaborators</string>
+    <string name="btn_remove">Remove</string>
+    <string name="textview_collaborators">Collaborators</string>
+    <string name="project_leader">Leader</string>
+    <string name="side_bar_menu">side bar menu</string>
+    <string name="collab_name">Name</string>
+    <string name="collab_designation">Designation</string>
 </resources>

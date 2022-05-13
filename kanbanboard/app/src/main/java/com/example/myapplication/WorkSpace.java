@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -33,7 +34,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class WorkSpace extends AppCompatActivity {
-
+    public static Activity workspace;
     private final ArrayList<WorkSpaceModel> workSpaceModelArrayList = new ArrayList<>();
     private FloatingActionButton floatingActionButton;
     private EditText newWorkspaceName;
@@ -60,6 +61,7 @@ public class WorkSpace extends AppCompatActivity {
         RecyclerView workspaceRecyclerView = findViewById(R.id.workspace_view);
         adapter = new WorkSpaceAdaptor(workSpaceModelArrayList);
         workspaceRecyclerView.setAdapter(adapter);
+        workspace = this;
         wHandler = new Handler(Looper.getMainLooper());
         try {
             this.user = new JSONObject(getIntent().getStringExtra("user"));
@@ -86,7 +88,7 @@ public class WorkSpace extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) view.getContext().getSystemService( Context.LAYOUT_INFLATER_SERVICE );
                 View view1 = inflater.inflate(R.layout.new_workspace_create, null);
                 builder.setView(view1);
-                newWorkspaceName = view1.findViewById(R.id.newWorkspaceName);
+                newWorkspaceName = view1.findViewById(R.id.newCollaboratorName);
                 // builder.setTitle("Add new workspace")
                         //.setView(layout)
                 builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
@@ -199,4 +201,5 @@ public class WorkSpace extends AppCompatActivity {
             Log.i("Workspace", e.getMessage());
         }
     }
+
 }

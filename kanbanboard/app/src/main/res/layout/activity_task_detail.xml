@@ -213,15 +213,18 @@
             </RadioGroup>
 
         </LinearLayout>
+
         <Button
+            android:id="@+id/idBtnUpdateTask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/idBtnUpdateTask"
+            android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:background="@drawable/round_bg"
             android:text="Update"
-            android:textColor="@color/colorThemeGreen"
-            android:layout_gravity="center"/>
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <TextView
             android:layout_width="wrap_content"
