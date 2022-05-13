@@ -344,13 +344,26 @@ def updateworkspacetask():
         assignee = x["assignee"]
         status = x["status"]
         conn = getSqliteConnection()
-        conn.execute(
+        getcollabuser = conn.execute(
+            "SELECT * from workspacecollaborators WHERE wid=(?)", (id, )).fetchall()
+        iscollabExist = False
+        for collabuser in getcollabuser:
+            if collabuser['username_collaborators'] == assignee:
+                iscollabExist = True
+                break
+        if iscollabExist==True:
+            conn.execute(
             'UPDATE WORKSPACETASKS SET title=(?), description=(?), priority=(?), assignee=(?), status=(?) WHERE id=(?)',
             (title, description, priority, assignee, status, id))
-        conn.commit()
-        conn.close()
+            conn.commit()
+            conn.close()
 
-        return json.dumps({"code": 200, "message": "Workspace Task Updated"})
+            return json.dumps({"code": 200, "message": "Workspace Task Updated"})    
+        else:
+            return json.dumps({"code": 400, "message": "Collobarators do not exist"})
+
+
+        
     else:
         return json.dumps({"code": 400, "message": "Failed to update workspace task"})
 

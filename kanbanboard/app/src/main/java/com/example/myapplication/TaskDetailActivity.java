@@ -359,13 +359,25 @@ public class TaskDetailActivity extends AppCompatActivity {
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        Log.i(TAG, "Task Updated Successfully!");
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(TaskDetailActivity.this, "Task Updated Successfully!", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                        if(x.getString("message").equals("Collobarators do not exist")){
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(getApplicationContext(),"Collobarators do not exist",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getApplicationContext(),"Please Add the Collaborators first",Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        }else{
+                            Log.i(TAG, "Task Updated Successfully!");
+                            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Toast.makeText(TaskDetailActivity.this, "Task Updated Successfully!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
                     } catch (Exception e) {
                         Log.i("UpdateTask", "Error in onResponse of update task");
                         Log.i("UpdateTask", e.getMessage());
