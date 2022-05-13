@@ -19,6 +19,7 @@ public class ServerURL {
     public static String fetchComments = "http://10.0.2.2:5000/fetchcomments";
     public static String deleteComment = "http://10.0.2.2:5000/deletecomment";
     public static String getUsers = "http://10.0.2.2:5000/getUsers";
+    public static String getcollab = "http://10.0.2.2:5000/getcollab";
 
 
 //    public static String login = "http://192.168.59.84:8000/login";

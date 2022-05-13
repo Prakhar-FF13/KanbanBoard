@@ -115,7 +115,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
             // request body.
             // create request.
             RequestBody data = RequestBody.create(x.toString(), JSON);
-            Request rq = new Request.Builder().url(ServerURL.getUsers).post(data).build();
+            Request rq = new Request.Builder().url(ServerURL.getcollab).post(data).build();
             client.newCall(rq).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {

@@ -89,7 +89,7 @@ public class WorkSpace extends DrawerBase {
         }
         activityWorkSpaceBinding = ActivityWorkSpaceBinding.inflate(getLayoutInflater());
         setContentView(activityWorkSpaceBinding.getRoot());
-        allocateActivityTitle("WorkSpace");
+        allocateActivityTitle("WorkSpaces");
         //setContentView(R.layout.activity_work_space);
         RecyclerView workspaceRecyclerView = findViewById(R.id.workspace_view);
         adapter = new WorkSpaceAdaptor(workSpaceModelArrayList);
