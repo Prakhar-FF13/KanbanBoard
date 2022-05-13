@@ -15,12 +15,16 @@
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/round_bg.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/round_border.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/drawable/wave.xml" value="0.1" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_add_collobarators.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_login.xml" value="0.22" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_main.xml" value="0.13994565217391305" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_show_collobarators.xml" value="0.1796875" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_task_detail.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_work_space.xml" value="0.14175724637681159" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/activity_workspace_detail.xml" value="0.22" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/card_task.xml" value="0.22" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/collab_item.xml" value="0.1796875" />
+        <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/dialog_add_comment.xml" value="0.1" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/dialog_add_task.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/fragment_status_close.xml" value="0.14130434782608695" />
         <entry key="..\:/Users/User/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/fragment_status_in_progress.xml" value="0.14130434782608695" />
@@ -47,12 +51,10 @@
         <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/new_workspace_create.xml" value="0.264" />
         <entry key="..\:/Users/shubh/AndroidStudioProjects/KanbanBoard/kanbanboard/app/src/main/res/layout/workspace_item.xml" value="0.21693840579710144" />
         <entry key="app/src/main/res/drawable/background_round_white.xml" value="0.101" />
-        <entry key="app/src/main/res/drawable/custom_button.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_baseline_more_vert_24.xml" value="0.101" />
         <entry key="app/src/main/res/layout-w1240dp/content_scrolling.xml" value="0.1753681392235609" />
         <entry key="app/src/main/res/layout-w936dp/content_scrolling.xml" value="0.2046875" />
         <entry key="app/src/main/res/layout/activity_add_collobarators.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_drawer_base.xml" value="0.1" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.16927083333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.2677083333333333" />
         <entry key="app/src/main/res/layout/activity_show_collobarators.xml" value="0.25" />
@@ -62,11 +64,8 @@
         <entry key="app/src/main/res/layout/collab_item.xml" value="0.1" />
         <entry key="app/src/main/res/layout/content_scrolling.xml" value="0.27291666666666664" />
         <entry key="app/src/main/res/layout/dialog_add_task.xml" value="0.13728470111448834" />
-        <entry key="app/src/main/res/layout/main_drawer_header.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/navigation_bar.xml" value="0.1" />
         <entry key="app/src/main/res/layout/new_workspace_create.xml" value="0.19202898550724637" />
         <entry key="app/src/main/res/layout/workspace_item.xml" value="0.1" />
-        <entry key="app/src/main/res/menu/main_drawer_menu.xml" value="0.1" />
         <entry key="app/src/main/res/menu/menu_workspace.xml" value="0.27291666666666664" />
         <entry key="app/src/main/res/menu/workspace_menu_items.xml" value="0.1" />
       </map>
