@@ -1,40 +1,24 @@
 package com.example.myapplication;
 
-import androidx.annotation.NonNull;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.os.Bundle;
+import android.os.Environment;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-
-import android.content.ContentValues;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Bundle;
-
-import android.os.Environment;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-
-import android.widget.ImageView;
-import android.widget.Toast;
-
 import com.github.dhaval2404.imagepicker.ImagePicker;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.HashMap;
-
 import de.hdodenhof.circleimageview.CircleImageView;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
+
+//import com.google.android.gms.cast.framework.media.ImagePicker;
 
 
 public class UploadImage extends AppCompatActivity {

@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -30,6 +32,7 @@ import com.example.myapplication.TaskDetailActivity;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -49,6 +52,7 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
     private ArrayList<TaskModel> openTaskModelArrayList;
     private RecyclerViewAdapter recyclerViewAdapter;
     private FloatingActionButton addTaskFABtn;
+    AutoCompleteTextView assigneeET;
     private int wid;
     private static final String open ="open";
     private static final String inProgress ="inProgress";
@@ -60,6 +64,8 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+
         // Inflate the layout for this fragment
         wid = getArguments() != null ? (int) getArguments().get("wid") : -1;
         openTaskModelArrayList = new ArrayList<>();
@@ -92,12 +98,61 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
         View view1 = inflater.inflate(R.layout.dialog_add_task, null);
         builder.setView(view1);
 
-        EditText titleET,descriptionET,assigneeET;
+        EditText titleET,descriptionET;
+
         RadioGroup radioGroupRG;
         titleET = view1.findViewById(R.id.idETTitle);
         descriptionET = view1.findViewById(R.id.idETDescription);
         assigneeET = view1.findViewById(R.id.idETAssignee);
         radioGroupRG = view1.findViewById(R.id.idRGDialog);
+
+        try {
+            OkHttpClient client = new OkHttpClient();
+            // media type to json, to inform the data is in json format
+            JSONObject x = new JSONObject();
+            x.put("wid", 1);
+            MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+            // request body.
+            // create request.
+            RequestBody data = RequestBody.create(x.toString(), JSON);
+            Request rq = new Request.Builder().url(ServerURL.getUsers).post(data).build();
+            client.newCall(rq).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+                    Log.i("NetworkCall", e.toString());
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    String res = response.body().string();
+                    try {
+                        JSONObject out = new JSONObject(res);
+                        Log.i("message", out.getString("message"));
+                        JSONArray arr = out.getJSONArray("returnusers");
+
+                        String[] marr = new String[arr.length()];
+                        for(int i=0;i< arr.length();i++){
+                            JSONObject mmarr = arr.getJSONObject(i);
+                            marr[i] = mmarr.getString("username");
+                        }
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(),android.R.layout.select_dialog_item, marr);
+                                assigneeET.setAdapter(adapter);
+                            }
+                        });
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.i("Workspace", "Error in create new workspace");
+            Log.i("Workspace", e.toString());
+        }
 
         builder.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @RequiresApi(api = Build.VERSION_CODES.O)
@@ -244,18 +299,30 @@ public class StatusOpenFragment extends Fragment implements RecyclerViewAdapter.
                     String res = response.body().string();
                     try {
                         JSONObject x = new JSONObject(res);
-                        int id = x.getInt("id");
-                        Bundle b = new Bundle();
-                        b.putInt("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
-                        if (status.equals(open)) {
-                            openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status, date));
+                        if(x.getString("message").equals("Collobarators do not exist")){
                             new Handler(Looper.getMainLooper()).post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    recyclerViewAdapter.notifyDataSetChanged();
+                                    Toast.makeText(getContext(),"Collobarators do not exist",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(),"Please Add the Collaborators first",Toast.LENGTH_SHORT).show();
                                 }
                             });
+
+                        }else{
+                            int id = x.getInt("id");
+                            Bundle b = new Bundle();
+                            b.putInt("wid", getArguments() != null ? getArguments().getInt("wid"): -1);
+                            if (status.equals(open)) {
+                                openTaskModelArrayList.add(new TaskModel(id, title, description, priority, assignee, status, date));
+                                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        recyclerViewAdapter.notifyDataSetChanged();
+                                    }
+                                });
+                            }
                         }
+
                     } catch (Exception e) {
                         Log.i("AddTaskInWorkspace", "Error in onResponse of add task");
                         Log.i("AddTaskInWorkspace", e.getMessage());
